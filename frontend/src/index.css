@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #111827;
+}
+
+/* Section background classes for better visual hierarchy */
+.section-hero {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #eef2ff 100%);
+}
+
+.section-browse {
+  background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 50%, #f0fdf4 100%);
+}
+
+.section-features {
+  background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 50%, #f5f3ff 100%);
+}
+
+.section-dashboard {
+  background: linear-gradient(135deg, #fafafa 0%, #fefce8 50%, #fef2f2 100%);
+}
+
+.section-about {
+  background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 50%, #f0f9ff 100%);
+}
+
+/* Alternative solid color backgrounds for sections */
+.section-light {
+  background: #f8fafc;
+}
+
+.section-white {
+  background: #ffffff;
+}
+
+.section-gray {
+  background: #f1f5f9;
+}
+
+.section-blue-light {
+  background: #f0f9ff;
+}
+
+.section-green-light {
+  background: #f0fdf4;
+}
+
+.section-purple-light {
+  background: #f5f3ff;
+}
+
+.section-amber-light {
+  background: #fffbeb;
+}
+
+.section-rose-light {
+  background: #fff1f2;
+}
+
+.section-teal-light {
+  background: #f0fdfa;
+}
+
+/* Professional gradient backgrounds for specific sections */
+.bg-gradient-hero {
+  background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f0f9ff 100%);
+}
+
+.bg-gradient-browse {
+  background: linear-gradient(135deg, #fafafa 0%, #f0fdf4 50%, #ecfdf5 100%);
+}
+
+.bg-gradient-modules {
+  background: linear-gradient(135deg, #f8fafc 0%, #f5f3ff 50%, #ede9fe 100%);
+}
+
+.bg-gradient-stats {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e0e7ff 50%, #f0f9ff 100%);
+}
