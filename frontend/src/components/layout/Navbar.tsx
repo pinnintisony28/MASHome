@@ -15,6 +15,7 @@ const navItems = [
   { name: "Drugs", path: "/drugs" },
   { name: "Biomarkers", path: "/biomarkers" },
   { name: "Bioactives", path: "/bioactives" },
+  // { name: "Pathways", path: "/pathways" },
 ];
 
 const moreNavItems = [

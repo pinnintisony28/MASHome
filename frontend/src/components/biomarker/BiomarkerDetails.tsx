@@ -1,168 +1,304 @@
-import { useState } from "react";
-import { Copy, Check, Activity } from "lucide-react";
-import type { Biomarker } from "../../types/biomarker";
-import { motion } from "framer-motion";
+import {
+  Activity,
+  Database,
+  FileText,
+  FlaskConical,
+  Image,
+  Info,
+  MapPin,
+} from "lucide-react";
 
-type BiomarkerDetailsProps = {
-  biomarker: Biomarker | null;
+type Biomarker = {
+  id: number;
+  biomarker_id: string;
+  biomarker_name: string;
+  category: string;
+  subgroup?: string | null;
+  normal_range?: string | null;
+  clinical_significance?: string | null;
+  description?: string | null;
+  source_sheet: string;
 };
+
+interface BiomarkerDetailsProps {
+  biomarker: Biomarker | null;
+}
 
 export default function BiomarkerDetails({
   biomarker,
 }: BiomarkerDetailsProps) {
-  const [copied, setCopied] = useState("");
-
-  const copyText = async (label: string, value: string) => {
-    if (!value) return;
-    await navigator.clipboard.writeText(value);
-    setCopied(label);
-    setTimeout(() => {
-      setCopied("");
-    }, 1500);
-  };
-
   if (!biomarker) {
     return (
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="h-full rounded-xl border border-slate-200/60 bg-white p-6 shadow-sm flex items-center justify-center"
-      >
-        <div className="text-center">
-          <div className="rounded-full bg-slate-100 p-4 mb-4 inline-flex">
-            <Activity size={28} className="text-slate-400" />
+      <div className="flex h-full min-h-[480px] items-center justify-center">
+
+        <div className="max-w-sm text-center">
+
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50 text-teal-600">
+            <FlaskConical size={26} />
           </div>
-          <h2
-            className="text-lg font-bold text-slate-700"
-            style={{ fontFamily: "Roboto Slab" }}
-          >
-            Biomarker Details
-          </h2>
-          <p className="mt-2 text-sm text-slate-500 max-w-sm" style={{ fontFamily: "Roboto Slab" }}>
-            Select a biomarker from the search results to view its details.
+
+          <h3 className="text-base font-semibold text-slate-800">
+            Select a biomarker
+          </h3>
+
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            Select a biomarker from the
+            results list to view its detailed
+            information.
           </p>
+
         </div>
-      </motion.div>
+
+      </div>
     );
   }
+   console.log(
+    "DETAILS RENDERING:",
+    biomarker.id,
+    biomarker.biomarker_name
+  );
+
+  const isBlood =
+    biomarker.category ===
+    "Blood & Serum Biomarkers";
+
+  const isImaging =
+    biomarker.category ===
+    "Imaging-Based Biomarkers";
+
+  const CategoryIcon = isBlood
+    ? Activity
+    : isImaging
+    ? Image
+    : Database;
+
+  const categoryLabel = isBlood
+    ? "Blood & Serum Biomarker"
+    : isImaging
+    ? "Imaging-Based Biomarker"
+    : "Overall Biomarker";
+
+  const renderValue = (
+    value?: string | null
+  ) => {
+    if (
+      value === null ||
+      value === undefined ||
+      value.trim() === ""
+    ) {
+      return (
+        <span className="text-slate-400">
+          Not available
+        </span>
+      );
+    }
+
+    return value;
+  };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="h-full rounded-xl border border-slate-200/60 bg-white shadow-sm overflow-hidden flex flex-col"
-    >
-      {/* Header - Fixed */}
-      <div className="border-b border-slate-200/60 bg-gradient-to-r from-slate-50/50 to-white p-4 flex-shrink-0">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
+    <div className="space-y-6">
+
+      {/* =================================================
+          HEADER
+      ================================================== */}
+
+      <div className="border-b border-slate-200 pb-5">
+
+        <div className="flex items-start gap-4">
+
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-sm">
+            <CategoryIcon size={21} />
+          </div>
+
+          <div className="min-w-0">
+
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+
+              <span className="rounded-full bg-teal-50 px-2.5 py-1 text-[10px] font-semibold text-teal-700">
+                {categoryLabel}
+              </span>
+
+              {biomarker.subgroup && (
+                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-medium text-slate-500">
+                  {biomarker.subgroup}
+                </span>
+              )}
+
+            </div>
+
             <h2
-              className="text-lg font-bold text-slate-800 truncate"
-              style={{ fontFamily: "Roboto Slab" }}
+              className="text-xl font-bold leading-7 text-slate-900"
+              style={{
+                fontFamily: "Roboto Slab",
+              }}
             >
-              {biomarker.biomarker_name || "Unknown Biomarker"}
+              {biomarker.biomarker_name}
             </h2>
-            <p className="mt-0.5 text-sm text-slate-500 truncate" style={{ fontFamily: "Roboto Slab" }}>
-              {biomarker.biomarker_id || "No ID available"}
+
+            <p className="mt-1 text-xs text-slate-400">
+              Biomarker ID:{" "}
+              <span className="font-medium text-slate-500">
+                {biomarker.biomarker_id}
+              </span>
             </p>
+
           </div>
 
-          <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-medium text-emerald-700 border border-emerald-200/50 flex-shrink-0">
-            Biomarker
-          </span>
         </div>
 
-        {/* Summary Items */}
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <SummaryItem
-            title="Biomarker ID"
-            value={biomarker.biomarker_id}
-            copied={copied === "id"}
-            onCopy={() => copyText("id", biomarker.biomarker_id)}
-          />
-          <SummaryItem
-            title="Disease"
-            value={biomarker.disease_name}
-            copied={copied === "disease"}
-            onCopy={() => copyText("disease", biomarker.disease_name)}
-          />
-        </div>
       </div>
 
-      {/* Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        {/* Basic Information */}
-        <section>
-          <h3
-            className="text-sm font-semibold text-slate-700 mb-2.5 flex items-center gap-2"
-            style={{ fontFamily: "Roboto Slab" }}
-          >
-            <span className="w-1 h-4 bg-emerald-500 rounded-full" />
-            Basic Information
+      {/* =================================================
+          DESCRIPTION
+      ================================================== */}
+
+      <section>
+
+        <div className="mb-3 flex items-center gap-2">
+
+          <Info
+            size={16}
+            className="text-teal-600"
+          />
+
+          <h3 className="text-sm font-semibold text-slate-900">
+            Description
           </h3>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <DetailItem label="Biomarker Name" value={biomarker.biomarker_name} />
-            <DetailItem label="Disease" value={biomarker.disease_name} />
-            <DetailItem label="ICD-11" value={biomarker.icd11} />
-            <DetailItem label="ICD-10" value={biomarker.icd10} />
-            <DetailItem label="ICD-9" value={biomarker.icd9} />
-          </div>
-        </section>
-      </div>
-    </motion.div>
-  );
-}
 
-// Detail Item Component
-function DetailItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-slate-200/60 bg-slate-50/30 px-3 py-2">
-      <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400" style={{ fontFamily: "Roboto Slab" }}>
-        {label}
-      </p>
-      <p className="mt-0.5 text-sm text-slate-700 truncate" style={{ fontFamily: "Roboto Slab" }}>
-        {value || "—"}
-      </p>
-    </div>
-  );
-}
+        </div>
 
-// Summary Item Component
-function SummaryItem({
-  title,
-  value,
-  copied,
-  onCopy,
-}: {
-  title: string;
-  value: string;
-  copied: boolean;
-  onCopy: () => void;
-}) {
-  return (
-    <div className="rounded-lg border border-slate-200/60 bg-white px-2.5 py-2 shadow-sm">
-      <div className="flex items-center justify-between">
-        <p className="text-[9px] font-medium uppercase tracking-wider text-slate-400" style={{ fontFamily: "Roboto Slab" }}>
-          {title}
-        </p>
-        {value && (
-          <button
-            onClick={onCopy}
-            className="text-slate-300 hover:text-emerald-600 transition-colors"
-          >
-            {copied ? (
-              <Check size={12} className="text-emerald-500" />
-            ) : (
-              <Copy size={12} />
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+
+          <p className="whitespace-pre-line text-sm leading-7 text-slate-700">
+            {renderValue(
+              biomarker.description
             )}
-          </button>
-        )}
-      </div>
-      <p className="mt-0.5 text-xs font-medium text-slate-700 truncate" style={{ fontFamily: "Roboto Slab" }}>
-        {value || "—"}
-      </p>
+          </p>
+
+        </div>
+
+      </section>
+
+      {/* =================================================
+          NORMAL RANGE
+      ================================================== */}
+
+      <section>
+
+        <div className="mb-3 flex items-center gap-2">
+
+          <Activity
+            size={16}
+            className="text-teal-600"
+          />
+
+          <h3 className="text-sm font-semibold text-slate-900">
+            Normal Range
+          </h3>
+
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+
+          <p className="whitespace-pre-line text-sm leading-7 text-slate-700">
+            {renderValue(
+              biomarker.normal_range
+            )}
+          </p>
+
+        </div>
+
+      </section>
+
+      {/* =================================================
+          CLINICAL SIGNIFICANCE
+      ================================================== */}
+
+      <section>
+
+        <div className="mb-3 flex items-center gap-2">
+
+          <FileText
+            size={16}
+            className="text-teal-600"
+          />
+
+          <h3 className="text-sm font-semibold text-slate-900">
+            Clinical Significance
+          </h3>
+
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+
+          <p className="whitespace-pre-line text-sm leading-7 text-slate-700">
+            {renderValue(
+              biomarker.clinical_significance
+            )}
+          </p>
+
+        </div>
+
+      </section>
+
+      {/* =================================================
+          INFORMATION
+      ================================================== */}
+
+      <section>
+
+        <div className="mb-3 flex items-center gap-2">
+
+          <Database
+            size={16}
+            className="text-teal-600"
+          />
+
+          <h3 className="text-sm font-semibold text-slate-900">
+            Database Information
+          </h3>
+
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+
+            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-400">
+
+              <Database size={13} />
+
+              Category
+
+            </div>
+
+            <p className="mt-2 text-sm font-medium text-slate-700">
+              {biomarker.category}
+            </p>
+
+          </div>
+
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+
+            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-400">
+
+              <MapPin size={13} />
+
+              Source
+
+            </div>
+
+            <p className="mt-2 break-words text-sm font-medium text-slate-700">
+              {biomarker.source_sheet.trim()}
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
     </div>
   );
 }

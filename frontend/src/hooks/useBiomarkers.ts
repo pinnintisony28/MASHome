@@ -3,15 +3,32 @@ import BiomarkerService from "../services/biomarkerService";
 import type { Biomarker } from "../types/biomarker";
 
 export default function useBiomarkers() {
-  const [biomarkers, setBiomarkers] = useState<Biomarker[]>([]);
+  const [biomarkers, setBiomarkers] =
+    useState<Biomarker[]>([]);
+
   const [selectedBiomarker, setSelectedBiomarker] =
     useState<Biomarker | null>(null);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  async function searchBiomarkers(keyword: string) {
+  const [detailsLoading, setDetailsLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const [hasSearched, setHasSearched] =
+    useState(false);
+
+
+  // =====================================================
+  // SEARCH BIOMARKERS
+  // =====================================================
+
+  async function searchBiomarkers(
+    keyword: string
+  ) {
     try {
       setLoading(true);
       setError("");
@@ -23,38 +40,75 @@ export default function useBiomarkers() {
         return;
       }
 
-      const data = await BiomarkerService.search(keyword);
+      const data =
+        await BiomarkerService.search(
+          keyword
+        );
 
       setBiomarkers(data);
       setSelectedBiomarker(null);
+
     } catch (err) {
       console.error(err);
-      setError("Failed to search biomarkers.");
+
+      setError(
+        "Failed to search biomarkers."
+      );
+
       setBiomarkers([]);
+
     } finally {
       setLoading(false);
     }
   }
 
-  async function selectBiomarker(id: number) {
+
+  // =====================================================
+  // SELECT BIOMARKER
+  // =====================================================
+
+  async function selectBiomarker(
+    id: number
+  ) {
     try {
-      setLoading(true);
+      setDetailsLoading(true);
       setError("");
 
-      const data = await BiomarkerService.getById(id);
+      const data =
+        await BiomarkerService.getById(
+          id
+ 
+        );
+        console.log("Selected Biomarker ID:", id);
+console.log("Selected Biomarker Data:", data);
 
       setSelectedBiomarker(data);
+
     } catch (err) {
       console.error(err);
-      setError("Unable to load biomarker details.");
+
+      setError(
+        "Unable to load biomarker details."
+      );
+
     } finally {
-      setLoading(false);
+      setDetailsLoading(false);
     }
   }
+
+
+  // =====================================================
+  // CLEAR SELECTION
+  // =====================================================
 
   function clearSelection() {
     setSelectedBiomarker(null);
   }
+
+
+  // =====================================================
+  // CLEAR SEARCH
+  // =====================================================
 
   function clearSearch() {
     setBiomarkers([]);
@@ -63,16 +117,20 @@ export default function useBiomarkers() {
     setError("");
   }
 
+
   return {
     biomarkers,
     selectedBiomarker,
 
     loading,
+    detailsLoading,
+
     error,
     hasSearched,
 
     searchBiomarkers,
     selectBiomarker,
+
     clearSelection,
     clearSearch,
   };

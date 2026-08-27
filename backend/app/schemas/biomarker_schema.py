@@ -3,12 +3,18 @@ from pydantic import BaseModel
 
 class BiomarkerResponse(BaseModel):
     id: int
+
     biomarker_id: str
     biomarker_name: str
-    disease_name: str
-    icd11: str | None = None
-    icd10: str | None = None
-    icd9: str | None = None
+
+    category: str
+    subgroup: str | None = None
+
+    normal_range: str | None = None
+    clinical_significance: str | None = None
+    description: str | None = None
+
+    source_sheet: str
 
     class Config:
         from_attributes = True

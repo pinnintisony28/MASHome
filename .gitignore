@@ -1,1 +1,33 @@
-datasets/Clinical_trials.xlsx 
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+
+# Frontend build
+dist/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# Python cache/testing
+.pytest_cache/
+.mypy_cache/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

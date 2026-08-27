@@ -1,6 +1,6 @@
 import type { Biomarker } from "../../types/biomarker";
 import BiomarkerRow from "./BiomarkerRow";
-import { motion } from "framer-motion";
+import { Database } from "lucide-react";
 
 type BiomarkerTableProps = {
   biomarkers: Biomarker[];
@@ -14,75 +14,114 @@ export default function BiomarkerTable({
   onSelect,
 }: BiomarkerTableProps) {
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="h-full overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-sm flex flex-col"
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-200/60 px-5 py-3.5 bg-gradient-to-r from-slate-50/50 to-white flex-shrink-0">
-        <div>
-          <h2
-            className="text-base font-bold text-slate-800"
-            style={{ fontFamily: "Roboto Slab" }}
-          >
-            Search Results
-          </h2>
-          <p className="text-xs text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
-            {biomarkers.length} biomarker{biomarkers.length !== 1 ? "s" : ""} found
-          </p>
-        </div>
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+      {/* =====================================================
+          TABLE HEADER
+      ====================================================== */}
+
+      <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
+
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[10px] text-slate-400">Live</span>
+
+          <Database
+            size={16}
+            className="text-teal-600"
+          />
+
+          <h3 className="text-sm font-semibold text-slate-800">
+            Biomarkers
+          </h3>
+
         </div>
+
+        <span className="text-xs text-slate-400">
+          {biomarkers.length} records
+        </span>
+
       </div>
 
-      {/* Table - Takes all remaining space */}
-      <div className="flex-1 overflow-auto scrollbar-hide min-h-[200px]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <table className="min-w-full">
-          <thead className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
-                Biomarker ID
+      {/* =====================================================
+          TABLE
+      ====================================================== */}
+
+      <div className="overflow-x-auto">
+
+        <table className="w-full min-w-[650px]">
+
+          <thead>
+
+            <tr className="border-b border-slate-200 bg-white">
+
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                ID
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
+
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400">
                 Biomarker
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
-                Disease
+
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                Category
               </th>
+
+              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                Subgroup
+              </th>
+
             </tr>
+
           </thead>
 
-          <tbody className="divide-y divide-slate-100">
-            {biomarkers.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={3}
-                  className="py-12 text-center text-sm text-slate-500"
-                  style={{ fontFamily: "Roboto Slab" }}
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <span>No biomarkers found</span>
-                    <span className="text-xs text-slate-400">Try adjusting your search</span>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              biomarkers.map((item) => (
+          <tbody>
+
+            {biomarkers.length > 0 ? (
+              biomarkers.map((biomarker) => (
                 <BiomarkerRow
-                  key={item.id}
-                  biomarker={item}
+                  key={biomarker.id}
+                  biomarker={biomarker}
                   onSelect={onSelect}
-                  isSelected={selectedId === item.id}
+                  isSelected={
+                    selectedId === biomarker.id
+                  }
                 />
               ))
+            ) : (
+              <tr>
+
+                <td
+                  colSpan={4}
+                  className="px-6 py-12 text-center"
+                >
+
+                  <div className="mx-auto max-w-sm">
+
+                    <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+                      <Database size={18} />
+                    </div>
+
+                    <p className="text-sm font-medium text-slate-600">
+                      No biomarkers found
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-400">
+                      Try a different search or
+                      category.
+                    </p>
+
+                  </div>
+
+                </td>
+
+              </tr>
             )}
+
           </tbody>
+
         </table>
+
       </div>
-    </motion.div>
+
+    </div>
   );
 }

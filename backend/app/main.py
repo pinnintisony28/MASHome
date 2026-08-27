@@ -41,6 +41,8 @@ from app.routers.patents import router as patents_router
 from app.routers.medical_devices import router as medical_devices_router
 from app.routers.associated_diseases import router as associated_diseases_router
 from app.routers import other_therapies
+from app.models.pathway import Pathway
+from app.routers.pathways import router as pathways_router
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -69,6 +71,7 @@ app.include_router(patents_router)
 app.include_router(medical_devices_router)
 app.include_router(associated_diseases_router)
 app.include_router(other_therapies.router)
+app.include_router(pathways_router)
 Base.metadata.create_all(bind=engine)
 @app.get("/")
 def home():

@@ -23,6 +23,7 @@ import AssociatedDiseases from "./pages/AssociatedDiseases/AssociatedDiseases";
 import AssociatedDiseaseDetailsPage from "./pages/AssociatedDiseases/AssociatedDiseaseDetailsPage";
 import OtherTherapies from "./pages/OtherTherapies";
 import OtherTherapyDetailsPage from "./pages/OtherTherapyDetails";
+import Pathways from "./pages/Pathways/Pathways";
 function App() {
   return (
     <Routes>
@@ -81,6 +82,7 @@ function App() {
   path="/other-therapies/:id"
   element={<OtherTherapyDetailsPage />}
 />
+<Route path="/pathways" element={<Pathways />} />
       </Route>
     </Routes>
   );
