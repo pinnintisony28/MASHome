@@ -693,7 +693,7 @@ export default function Biomarkers() {
                             filteredBiomarkers
                           }
                           selectedId={
-                            selectedBiomarker?.id
+                            undefined
                           }
                           onSelect={
                             selectBiomarker
