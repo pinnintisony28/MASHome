@@ -93,7 +93,7 @@ export default function InitialLoader({
           <h1
             className="text-2xl font-bold text-slate-800"
             style={{
-              fontFamily: "Montserrat",
+              fontFamily: "Roboto Slab",
             }}
           >
             <TypingMessage />
