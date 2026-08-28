@@ -48,7 +48,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://frontend-zeta-lemon-31.vercel.app/"
+        "https://frontend-zeta-lemon-31.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
