@@ -43,7 +43,13 @@ from app.routers.associated_diseases import router as associated_diseases_router
 from app.routers import other_therapies
 from app.models.pathway import Pathway
 from app.routers.pathways import router as pathways_router
+from fastapi.staticfiles import StaticFiles
 app = FastAPI()
+app.mount(
+    "/pathway-images",
+    StaticFiles(directory="../pathway-images"),
+    name="pathway-images"
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

@@ -1,133 +1,165 @@
-import { Dna, Search, Sparkles, ArrowRight } from "lucide-react";
-import { motion , type Variants} from "framer-motion";
+import { Search } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 
 type GeneWelcomeProps = {
   onQuickSearch: (keyword: string) => void;
 };
 
-export default function GeneWelcome({
-  onQuickSearch,
-}: GeneWelcomeProps) {
+const COLUMNS = 16;
+const AMPLITUDE = 12;
+
+/* Flat-top hexagon: width 9rem, height = width / 1.1547 */
+const HEX_CLIP = "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)";
+const HEX_W = "9rem";
+const HEX_H = "7.794rem";
+
+/* Animated DNA helix: one calm, looping moment at the top of the card */
+function Helix({ animated }: { animated: boolean }) {
+  return (
+    <div
+      aria-hidden="true"
+      className="flex h-10 items-center justify-center gap-2.5"
+    >
+      {Array.from({ length: COLUMNS }, (_, i) => {
+        const delay = i * 0.14;
+        const staticY = AMPLITUDE * Math.sin(i * 0.65);
+
+        const loop = {
+          duration: 2.8,
+          ease: "easeInOut" as const,
+          repeat: Infinity,
+          delay,
+        };
+
+        return (
+          <div key={i} className="relative flex h-10 w-2 items-center justify-center">
+            <motion.span
+              className="absolute w-px origin-center bg-emerald-200"
+              style={{ height: AMPLITUDE * 2 }}
+              initial={{ scaleY: Math.abs(Math.cos(i * 0.65)) }}
+              animate={animated ? { scaleY: [1, 0, 1, 0, 1] } : undefined}
+              transition={loop}
+            />
+            <motion.span
+              className="absolute h-2 w-2 rounded-full bg-emerald-500"
+              initial={{ y: -staticY }}
+              animate={
+                animated
+                  ? {
+                      y: [-AMPLITUDE, 0, AMPLITUDE, 0, -AMPLITUDE],
+                      scale: [0.75, 1, 1.25, 1, 0.75],
+                    }
+                  : undefined
+              }
+              transition={loop}
+            />
+            <motion.span
+              className="absolute h-2 w-2 rounded-full bg-teal-400"
+              initial={{ y: staticY }}
+              animate={
+                animated
+                  ? {
+                      y: [AMPLITUDE, 0, -AMPLITUDE, 0, AMPLITUDE],
+                      scale: [1.25, 1, 0.75, 1, 1.25],
+                    }
+                  : undefined
+              }
+              transition={loop}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function GeneWelcome({ onQuickSearch }: GeneWelcomeProps) {
+  const reduceMotion = useReducedMotion();
+
   const quickSearches = [
-    "MIR122",
-    "H19",
-    "MEG3",
-    "RNA Gene",
+    { term: "MIR122", kind: "Gene symbol" },
+    { term: "H19", kind: "Gene symbol" },
+    { term: "MEG3", kind: "Gene symbol" },
+    { term: "RNA Gene", kind: "Gene type" },
   ];
 
-  const containerVariants:Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants :Variants= {
-    hidden: { opacity: 0, y: 15 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.4,
-        ease: "easeOut",
-      },
-    },
-  };
-
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="relative overflow-hidden rounded-2xl border border-slate-200/60 bg-gradient-to-br from-slate-50/50 via-white to-emerald-50/20 p-8 shadow-sm"
+    <motion.section
+      initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+      style={{ fontFamily: "Roboto Slab" }}
     >
-      {/* Decorative Elements */}
-      <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-emerald-500/5 blur-2xl" />
-      <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-teal-500/5 blur-2xl" />
-      
-      {/* Top Accent Line */}
-      <div className="absolute top-0 left-0 h-1 w-24 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+      {/* Hero */}
+      <div className="bg-gradient-to-b from-emerald-50/80 to-white px-6 pt-8 pb-6 text-center sm:px-10 sm:pt-10">
+        <Helix animated={!reduceMotion} />
 
-      <div className="relative">
-        {/* Icon Section */}
-        <motion.div 
-          variants={itemVariants}
-          className="flex justify-center"
+        <h2
+          className="mt-5 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
+          style={{ fontFamily: "Roboto Slab" }}
         >
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-emerald-400/20 to-teal-400/20 blur-xl animate-pulse" />
-            <div className="relative rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 p-4 shadow-lg shadow-emerald-500/30">
-              <Dna size={32} className="text-white" />
-            </div>
-          </div>
-        </motion.div>
+          Explore Gene Information
+        </h2>
 
-        {/* Content */}
-        <motion.div variants={itemVariants} className="mt-5 text-center">
-          <h2
-            className="text-2xl font-bold text-slate-800"
-            style={{ fontFamily: "Roboto Slab" }}
-          >
-            Explore Gene Information
-          </h2>
-          
-          <div className="flex items-center justify-center gap-2 mt-1">
-            {/* <Sparkles size={12} className="text-emerald-400" /> */}
-            {/* <span className="text-xs text-slate-400">Discover genetic insights</span> */}
-            {/* <Sparkles size={12} className="text-emerald-400" /> */}
-          </div>
-
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-500 leading-relaxed" style={{ fontFamily: "Roboto Slab" }}>
-            Search genes by symbol, gene name or gene type to explore biological properties and therapeutic relevance.
-          </p>
-        </motion.div>
-
-        {/* Quick Search Buttons */}
-        <motion.div 
-          variants={itemVariants}
-          className="mt-6 flex flex-wrap items-center justify-center gap-2"
+        <p
+          className="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-600 sm:text-base"
+          style={{ fontFamily: "Roboto Slab" }}
         >
-          <span className="text-xs font-medium text-slate-400 mr-1">Quick Search:</span>
-          {quickSearches.map((item) => (
-            <motion.button
-              key={item}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.05,
-                y: -2,
-                transition: { duration: 0.15 }
-              }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onQuickSearch(item)}
-              className="group relative overflow-hidden rounded-full border border-emerald-200/60 bg-white px-4 py-1.5 text-sm font-medium text-emerald-700 shadow-sm transition-all duration-200 hover:border-emerald-400 hover:bg-emerald-50 hover:shadow-md"
-              style={{ fontFamily: "Roboto Slab" }}
-            >
-              <span className="relative z-10 flex items-center gap-1.5">
-                <Search size={12} className="text-emerald-400" />
-                {item}
-              </span>
-              <span className="absolute inset-0 bg-gradient-to-r from-emerald-50 to-teal-50 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
-            </motion.button>
-          ))}
-        </motion.div>
-
-        {/* Bottom Divider */}
-        <motion.div 
-          variants={itemVariants}
-          className="mt-6 flex items-center justify-center gap-4"
-        >
-          <div className="h-px flex-1 max-w-20 bg-gradient-to-r from-transparent to-emerald-200" />
-          <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 flex items-center gap-1">
-            <span>Start exploring</span>
-            <ArrowRight size={12} className="text-emerald-400" />
-          </span>
-          <div className="h-px flex-1 max-w-20 bg-gradient-to-l from-transparent to-emerald-200" />
-        </motion.div>
+          Search genes by symbol, gene name or gene type to explore biological
+          properties and therapeutic relevance.
+        </p>
       </div>
-    </motion.div>
+
+      {/* Quick search: chain of hexagon "molecule rings" */}
+      <div className="px-6 pb-10 sm:px-10">
+        <p
+          className="mb-5 text-center text-sm font-medium text-slate-500"
+          style={{ fontFamily: "Roboto Slab" }}
+        >
+          Not sure where to start? Try one of these.
+        </p>
+
+        <div className="grid grid-cols-2 justify-items-center gap-4 sm:flex sm:items-start sm:justify-center sm:gap-0">
+          {quickSearches.map(({ term, kind }, index) => (
+            <button
+              key={term}
+              type="button"
+              onClick={() => onQuickSearch(term)}
+              aria-label={`Search for ${term}`}
+              className={`group relative block shrink-0 bg-transparent transition-transform duration-200 hover:z-10 hover:scale-105 focus:outline-none motion-reduce:transition-none motion-reduce:hover:scale-100 ${
+                index > 0 ? "sm:-ml-9" : ""
+              } ${index % 2 === 1 ? "sm:mt-[3.9rem]" : ""}`}
+              style={{ width: HEX_W, height: HEX_H, fontFamily: "Roboto Slab" }}
+            >
+              {/* hexagon border */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 bg-emerald-200 transition-colors duration-200 group-hover:bg-emerald-500 group-focus-visible:bg-emerald-700"
+                style={{ clipPath: HEX_CLIP }}
+              />
+              {/* hexagon fill */}
+              <span
+                aria-hidden="true"
+                className="absolute inset-[2px] bg-white transition-colors duration-200 group-hover:bg-emerald-50"
+                style={{ clipPath: HEX_CLIP }}
+              />
+              {/* content */}
+              <span className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 text-center">
+                <Search
+                  size={14}
+                  className="text-emerald-500 transition-colors duration-200 group-hover:text-emerald-700"
+                  aria-hidden="true"
+                />
+                <span className="mt-1 text-base font-semibold text-slate-800">
+                  {term}
+                </span>
+                <span className="text-[11px] text-slate-500">{kind}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </motion.section>
   );
 }

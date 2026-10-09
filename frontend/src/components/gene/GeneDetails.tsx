@@ -47,7 +47,8 @@ export default function GeneDetails({
     );
   }
 
-  const property = gene.properties?.[0];
+  const properties = gene.properties ?? [];
+  const property = properties[0];
 
   return (
     <motion.div 
@@ -90,13 +91,57 @@ export default function GeneDetails({
             title="Gene Type"
             value={gene.gene_type}
             copied={copied === "Type"}
-            onCopy={() => copyText("Type", gene.gene_type)}
+            onCopy={() => copyText("Type", gene.gene_type ?? "")}
           />
         </div>
       </div>
 
       {/* Content - Scrollable */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+       {/* Gene Annotation */}
+<section>
+  <h3
+    className="text-sm font-semibold text-slate-700 mb-2.5 flex items-center gap-2"
+    style={{ fontFamily: "Roboto Slab" }}
+  >
+    <span className="w-1 h-4 bg-emerald-500 rounded-full" />
+    Gene Annotation
+  </h3>
+
+  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+    <DetailItem label="Original Symbol" value={gene.original_symbol ?? "—"} />
+    <DetailItem label="Official Symbol" value={gene.symbol} />
+    <DetailItem label="Previous Symbol" value={gene.previous_symbol ?? "—"} />
+    <DetailItem label="Gene Type" value={gene.gene_type ?? "—"} />
+    <DetailItem label="Genomic Location" value={gene.genomic_location ?? "—"} />
+    <DetailItem label="Chromosome" value={gene.chromosome ?? "—"} />
+    <DetailItem label="Assembly" value={gene.assembly ?? "—"} />
+  </div>
+</section>
+{/* Database Identifiers */}
+<section>
+  <h3
+    className="text-sm font-semibold text-slate-700 mb-2.5 flex items-center gap-2"
+    style={{ fontFamily: "Roboto Slab" }}
+  >
+    <span className="w-1 h-4 bg-teal-500 rounded-full" />
+    Database Identifiers
+  </h3>
+
+  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+    <DetailItem label="NCBI Gene ID" value={gene.ncbi_gene_id ?? "—"} />
+    <DetailItem label="Ensembl Gene ID" value={gene.ensembl_gene_id ?? "—"} />
+    <DetailItem label="HGNC ID" value={gene.hgnc_id ?? "—"} />
+    <DetailItem label="UniProt ID" value={gene.uniprot_id ?? "—"} />
+    <DetailItem label="RefSeq" value={gene.refseq ?? "—"} />
+    <DetailItem label="MANE Select" value={gene.mane_select ?? "—"} />
+    <DetailItem
+      label="Canonical Transcript"
+      value={gene.canonical_transcript ?? "—"}
+    />
+    <DetailItem label="Status" value={gene.status ?? "—"} />
+  </div>
+</section>
         {/* Gene Properties */}
         <section>
           <h3
@@ -114,8 +159,15 @@ export default function GeneDetails({
             <DetailItem label="Has Ligand" value={property?.has_ligand ? "Yes" : "No"} />
             <DetailItem label="Small Molecule Binder" value={property?.has_small_molecule_binder ? "Yes" : "No"} />
             <DetailItem label="Has Pocket" value={property?.has_pocket ? "Yes" : "No"} />
-            <DetailItem label="Tissue Specificity" value={property?.tissue_specificity ?? "—"} />
-            <DetailItem label="Tissue Distribution" value={property?.tissue_distribution ?? "—"} />
+           <DetailItem
+  label="Tissue Specificity"
+  value={property?.tissue_specificity?.toString() ?? "—"}
+/>
+
+<DetailItem
+  label="Tissue Distribution"
+  value={property?.tissue_distribution?.toString() ?? "—"}
+/>
           </div>
         </section>
       </div>
@@ -145,7 +197,7 @@ function SummaryItem({
   onCopy,
 }: {
   title: string;
-  value: string;
+  value: string | null;
   copied: boolean;
   onCopy: () => void;
 }) {

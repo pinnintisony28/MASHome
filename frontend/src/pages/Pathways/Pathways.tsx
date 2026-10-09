@@ -5,11 +5,10 @@ import {
   Network,
   Loader2,
   AlertCircle,
-  Info,
+  
   Activity,
   FlaskConical,
-  HeartPulse,
-  Database,
+  
 } from "lucide-react";
 
 import usePathways from "../../hooks/usePathways";
@@ -26,8 +25,9 @@ export default function Pathways() {
   } = usePathways();
 
   const [activeSection, setActiveSection] =
-    useState<string>("overview");
-
+    useState<string>("");
+  const [showPathwayMenu, setShowPathwayMenu] =
+    useState(false);
   /*
    * Get all individual tables from pathway_data.
    *
@@ -57,135 +57,7 @@ export default function Pathways() {
      OVERVIEW
   ========================================================= */
 
-  const renderOverview = () => {
-    if (!selectedPathway) {
-      return null;
-    }
-
-    return (
-      <div className="space-y-6">
-
-        {/* Heading */}
-
-        <div>
-          <div className="mb-2 inline-flex rounded-full bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
-            {selectedPathway.pathway_id}
-          </div>
-
-          <h2
-            className="text-2xl font-bold text-slate-900"
-            style={{
-              fontFamily: "Roboto Slab",
-            }}
-          >
-            {selectedPathway.pathway_name}
-          </h2>
-
-          <p className="mt-2 text-sm text-slate-500">
-            Source:{" "}
-            {selectedPathway.source_sheet}
-          </p>
-        </div>
-
-        {/* Basic information */}
-
-        <div className="grid gap-4 sm:grid-cols-2">
-
-          {[
-            [
-              "Category",
-              selectedPathway.category,
-            ],
-            [
-              "Super Category",
-              selectedPathway.super_category,
-            ],
-            [
-              "Disease",
-              selectedPathway.disease,
-            ],
-            [
-              "Disease Stages",
-              selectedPathway.disease_stages,
-            ],
-            [
-              "Cellular Location",
-              selectedPathway.cellular_location,
-            ],
-            [
-              "Major Cell Types",
-              selectedPathway.major_cell_types,
-            ],
-          ].map(([label, value]) => (
-            <div
-              key={label}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4"
-            >
-              <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                {label}
-              </div>
-
-              <div className="mt-2 text-sm leading-6 text-slate-700">
-                {renderValue(value)}
-              </div>
-            </div>
-          ))}
-
-        </div>
-
-        {/* Clinical + status */}
-
-        <div className="grid gap-4 sm:grid-cols-2">
-
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-
-            <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
-              Clinical Importance
-            </div>
-
-            <p className="mt-2 text-sm leading-7 text-slate-700">
-              {renderValue(
-                selectedPathway.clinical_importance
-              )}
-            </p>
-
-          </div>
-
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-
-            <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
-              Pathway Status
-            </div>
-
-            <p className="mt-2 text-sm leading-7 text-slate-700">
-              {renderValue(
-                selectedPathway.pathway_status
-              )}
-            </p>
-
-          </div>
-
-        </div>
-
-        {/* Primary function */}
-
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-
-          <div className="text-xs font-medium uppercase tracking-wide text-slate-400">
-            Primary Function
-          </div>
-
-          <p className="mt-2 text-sm leading-7 text-slate-700">
-            {renderValue(
-              selectedPathway.primary_function
-            )}
-          </p>
-
-        </div>
-
-      </div>
-    );
-  };
+  
 
   /* =========================================================
      CLINICAL INFORMATION
@@ -424,9 +296,7 @@ export default function Pathways() {
 
   const renderActiveContent = () => {
 
-    if (activeSection === "overview") {
-      return renderOverview();
-    }
+    
 
     if (activeSection === "clinical") {
       return renderClinical();
@@ -559,8 +429,10 @@ export default function Pathways() {
                   if (pathway) {
 
                     setActiveSection(
-                      "overview"
-                    );
+  pathwayTables.length > 0
+    ? pathwayTables[0][0]
+    : ""
+);
 
                     selectPathway(
                       pathway
@@ -689,6 +561,15 @@ export default function Pathways() {
                         selectedPathway.pathway_name
                       }
                     </h2>
+                    {selectedPathway.image_url && (
+  <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+    <img
+      src={`http://127.0.0.1:8000${selectedPathway.image_url}`}
+      alt={`${selectedPathway.pathway_name} pathway`}
+      className="mx-auto max-h-[700px] w-full object-contain"
+    />
+  </div>
+)}
 
                   </div>
 
@@ -734,7 +615,7 @@ export default function Pathways() {
                           OVERVIEW
                       ================================================== */}
 
-                      <button
+                      {/* <button
                         type="button"
                         onClick={() =>
                           setActiveSection(
@@ -769,7 +650,7 @@ export default function Pathways() {
                           Overview
                         </span>
 
-                      </button>
+                      </button> */}
 
                       {/* =================================================
                           PATHWAY DETAILS HOVER MENU
@@ -780,6 +661,7 @@ export default function Pathways() {
                         {/* Main menu item */}
 
                         <div
+                          onClick={() => setShowPathwayMenu(!showPathwayMenu)}
                           className={`
                             flex
                             w-full
@@ -836,21 +718,26 @@ export default function Pathways() {
                           0 && (
 
                           <div
-                            className="
-                              absolute
-                              left-full
-                              top-0
-                              z-50
-                              hidden
-                              w-72
-                              rounded-xl
-                              border
-                              border-slate-200
-                              bg-white
-                              p-2
-                              shadow-xl
-                              group-hover:block
-                            "
+                            className={`
+                              relative
+  mt-1
+  z-50
+  w-full
+  rounded-xl
+  border
+  border-slate-200
+  bg-white
+  p-2
+  shadow-xl
+
+ ${showPathwayMenu ? "block" : "hidden"}
+
+md:absolute
+md:left-full
+md:top-0
+md:w-72
+md:block
+`}
                           >
 
                             <div className="border-b border-slate-100 px-3 py-2">
@@ -875,11 +762,10 @@ export default function Pathways() {
                                       sectionName
                                     }
                                     type="button"
-                                    onClick={() =>
-                                      setActiveSection(
-                                        sectionName
-                                      )
-                                    }
+                                    onClick={() => {
+  setActiveSection(sectionName);
+  setShowPathwayMenu(false);
+}}
                                     title={
                                       sectionName
                                     }
@@ -923,138 +809,14 @@ export default function Pathways() {
 
                       </div>
 
-                      {/* =================================================
-                          CLINICAL INFORMATION
-                      ================================================== */}
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveSection(
-                            "clinical"
-                          )
-                        }
-                        className={`
-                          flex
-                          w-full
-                          items-center
-                          gap-3
-                          rounded-lg
-                          px-3
-                          py-2.5
-                          text-left
-                          text-sm
-                          font-medium
-                          transition-all
-                          duration-200
-                          ${
-                            activeSection ===
-                            "clinical"
-                              ? "bg-teal-600 text-white shadow-sm"
-                              : "text-slate-600 hover:bg-white hover:text-teal-700 hover:shadow-sm"
-                          }
-                        `}
-                      >
-
-                        <HeartPulse
-                          size={17}
-                        />
-
-                        <span>
-                          Clinical Information
-                        </span>
-
-                      </button>
-
-                      {/* =================================================
-                          THERAPEUTIC RELEVANCE
-                      ================================================== */}
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveSection(
-                            "therapeutic"
-                          )
-                        }
-                        className={`
-                          flex
-                          w-full
-                          items-center
-                          gap-3
-                          rounded-lg
-                          px-3
-                          py-2.5
-                          text-left
-                          text-sm
-                          font-medium
-                          transition-all
-                          duration-200
-                          ${
-                            activeSection ===
-                            "therapeutic"
-                              ? "bg-teal-600 text-white shadow-sm"
-                              : "text-slate-600 hover:bg-white hover:text-teal-700 hover:shadow-sm"
-                          }
-                        `}
-                      >
-
-                        <FlaskConical
-                          size={17}
-                        />
-
-                        <span>
-                          Therapeutic Relevance
-                        </span>
-
-                      </button>
-
-                      {/* =================================================
-                          DATABASE INFORMATION
-                      ================================================== */}
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveSection(
-                            "database"
-                          )
-                        }
-                        className={`
-                          flex
-                          w-full
-                          items-center
-                          gap-3
-                          rounded-lg
-                          px-3
-                          py-2.5
-                          text-left
-                          text-sm
-                          font-medium
-                          transition-all
-                          duration-200
-                          ${
-                            activeSection ===
-                            "database"
-                              ? "bg-teal-600 text-white shadow-sm"
-                              : "text-slate-600 hover:bg-white hover:text-teal-700 hover:shadow-sm"
-                          }
-                        `}
-                      >
-
-                        <Database size={17} />
-
-                        <span>
-                          Database Information
-                        </span>
-
-                      </button>
-
-                    </nav>
+                      </nav>
 
                   </div>
 
-                </aside>
+                  
+
+                </aside>  
+        
 
                 {/* =================================================
                     RIGHT CONTENT

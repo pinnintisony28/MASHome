@@ -5,6 +5,7 @@ import pandas as pd
 
 from app.database import SessionLocal
 from app.models.pathway import Pathway
+from openpyxl import load_workbook
 
 
 # ============================================================
@@ -26,7 +27,10 @@ FILE_PATH = os.path.join(
     "datasets",
     "Pathways.xlsx"
 )
-
+IMAGE_OUTPUT_DIR = os.path.join(
+    BASE_DIR,
+    "pathway-images"
+)
 
 # ============================================================
 # CONFIGURATION
@@ -139,7 +143,57 @@ def parse_boolean(value):
 
     return None
 
+def extract_sheet_image(
+    workbook,
+    sheet_name,
+    output_dir
+):
+    """
+    Extract the first embedded image from a worksheet
+    and save it as a PNG file.
+    """
 
+    worksheet = workbook[sheet_name]
+
+    if not worksheet._images:
+        print(
+            f"⚠️ No embedded image found in: {sheet_name}"
+        )
+        return None
+
+    image = worksheet._images[0]
+
+    os.makedirs(
+        output_dir,
+        exist_ok=True
+    )
+
+    safe_name = re.sub(
+        r"[^A-Za-z0-9]+",
+        "_",
+        sheet_name
+    ).strip("_")
+
+    image_filename = f"{safe_name}.png"
+
+    image_path = os.path.join(
+        output_dir,
+        image_filename
+    )
+
+    image_data = image._data()
+
+    with open(
+        image_path,
+        "wb"
+    ) as file:
+        file.write(image_data)
+
+    print(
+        f"🖼️ Image extracted: {image_filename}"
+    )
+
+    return f"/pathway-images/{image_filename}"
 def make_fallback_pathway_id(
     sheet_name,
     sheet_index
@@ -163,85 +217,63 @@ def make_fallback_pathway_id(
 # ============================================================
 
 def is_section_heading(value):
-    """
-    Detect numbered sections:
-
-    1. Pathway Master Table
-    2. Disease Initiation Table
-    ...
-    18. Novel Database Fields
-    """
-
     if value is None:
         return False
 
     value = str(value).strip()
 
-    return bool(
-        re.match(
-            r"^\d+\.\s+",
-            value
-        )
-    )
+    known_sections = {
+        "Disease Initiation",
+        "Signaling Cascades",
+        "Major Genes",
+        "Proteins",
+        "Cellular Components",
+        "Organelles",
+        "Cellular Events",
+        "Upstream Regulators",
+        "Downstream Effectors",
+        "Pathway Crosstalk",
+        "Disease Stage Activity",
+        "Biomarkers",
+        "Therapeutic Targets",
+        "Complete Signaling Cascade",
+        "Pathway Master Data",
+        "Pathway Master Table",
+        "Disease Initiation Table",
+        "Signaling Cascade Table",
+        "Major Gene Table",
+        "Protein Table",
+        "Organelle Table",
+        "Cellular Events Table",
+        "Biomarker Table",
+        "Therapeutic Target Table",
+    }
 
+    return value in known_sections
 
 def detect_sections(df):
-    """
-    Split a worksheet into logical sections.
-
-    Returns:
-
-    {
-        "1. Pathway Master Table": dataframe,
-        "2. Disease Initiation Table": dataframe,
-        ...
-    }
-    """
-
     sections = []
-
     current_section = None
     current_rows = []
 
     for _, row in df.iterrows():
+        first_value = clean_value(row.iloc[0])
 
-        first_value = clean_value(
-            row.iloc[0]
-        )
-
-        if is_section_heading(
-            first_value
-        ):
-
+        if is_section_heading(first_value):
             if current_section is not None:
-                sections.append(
-                    (
-                        current_section,
-                        current_rows
-                    )
-                )
+                sections.append((current_section, current_rows))
 
             current_section = first_value
             current_rows = []
 
         else:
-
             if current_section is not None:
-                current_rows.append(
-                    row.tolist()
-                )
+                current_rows.append(row.tolist())
 
     if current_section is not None:
-        sections.append(
-            (
-                current_section,
-                current_rows
-            )
-        )
+        sections.append((current_section, current_rows))
 
     return sections
-
-
 # ============================================================
 # SPECIAL SECTION DETECTION
 # ============================================================
@@ -663,6 +695,11 @@ def extract_complete_sheet_data(
     df,
     sheet_name
 ):
+    if sheet_name == "Insulin Resistance":
+      sections = detect_insulin_sections(df)
+    else:
+      sections = detect_sections(df)
+    print("DETECTED SECTIONS:", [name for name, rows in sections])
     """
     Preserve every section from the
     Excel sheet in JSON.
@@ -703,7 +740,8 @@ def extract_complete_sheet_data(
 def import_sheet(
     db,
     sheet_name,
-    sheet_index
+    sheet_index,
+    image_workbook
 ):
 
     print(
@@ -714,10 +752,17 @@ def import_sheet(
         FILE_PATH,
         sheet_name=sheet_name,
         header=None
+       
     )
 
     print(
         f"Rows: {len(df)}"
+    )
+    print(df.iloc[:30, :5].to_string())
+    image_url = extract_sheet_image(
+    image_workbook,
+    sheet_name,
+    IMAGE_OUTPUT_DIR
     )
 
     # --------------------------------------------------------
@@ -907,6 +952,7 @@ def import_sheet(
         ),
 
         source_sheet=sheet_name,
+        image_url=image_url,
 
         pathway_data=complete_data
     )
@@ -951,6 +997,10 @@ def main():
     excel_file = pd.ExcelFile(
         FILE_PATH
     )
+    image_workbook = load_workbook(
+        FILE_PATH
+    )
+
 
     all_sheets = (
         excel_file.sheet_names
@@ -1015,7 +1065,8 @@ def main():
                 import_sheet(
                     db,
                     sheet_name,
-                    sheet_index
+                    sheet_index,
+                    image_workbook
                 )
 
                 successful += 1
@@ -1081,3 +1132,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

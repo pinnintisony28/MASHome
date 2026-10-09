@@ -27,4 +27,6 @@ class Pathway(Base):
 
     source_sheet = Column(String(255), nullable=False, index=True)
 
+    image_url = Column(Text, nullable=True)
+
     pathway_data = Column(JSON, nullable=True)

@@ -22,7 +22,10 @@ class PathwayBase(BaseModel):
 
 class PathwayResponse(PathwayBase):
     id: int
+    image_url: Optional[str] = None
     pathway_data: Optional[dict[str, Any]] = None
+    
+
 
     model_config = ConfigDict(
         from_attributes=True

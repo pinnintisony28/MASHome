@@ -1,333 +1,317 @@
-import { Search, ArrowRight, Sparkles, BookOpen, FlaskRound as Flask, Microscope } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { motion, type Variants } from "framer-motion";
+import { useEffect, useState } from "react";
+import {
+    Search,
+    ArrowRight,
+    Sparkles,
+    BookOpen,
+    FlaskRound as Flask,
+    Microscope,
+} from "lucide-react";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 
 type HeroProps = {
     onSearch?: () => void;
 };
 
+/*
+  Design notes
+  - Concept: a microscope field of view. MASLD is fatty liver disease, so the platform's
+    seven data types are drawn as lipid droplets seen in a tissue section.
+  - The droplets light up one after another (a quiet guided tour of what is inside) and
+    hovering a droplet pauses the tour on it.
+  - A graduated ring turns very slowly around the field, with a fixed pointer at the top.
+  - Palette: ink teal #134E4A, teal-700 (action), teal-100/300 (droplets), mist #F0FAF8,
+    emerald-500 (one small accent). Typography: Roboto Slab throughout.
+  - Reduced motion: no entrance, no ring turn, no automatic tour.
+*/
+
+const STATS = [
+    { value: "50K+", label: "Publications", Icon: BookOpen },
+    { value: "2K+", label: "Compounds", Icon: Flask },
+    { value: "500+", label: "Clinical Trials", Icon: Microscope },
+];
+
+/* Data types as droplets: size is the diameter and x/y the centre, in % of the field */
+const DROPLETS = [
+    { label: "Genes", size: 32, x: 50, y: 50, delay: 0.2 },
+    { label: "Therapeutic targets", size: 26, x: 50, y: 20, delay: 0.35 },
+    { label: "Approved drugs", size: 26, x: 76, y: 35, delay: 0.45 },
+    { label: "Biomarkers", size: 24, x: 76.8, y: 65.5, delay: 0.55 },
+    { label: "Bioactives", size: 26, x: 50, y: 80, delay: 0.65 },
+    { label: "Clinical trials", size: 28, x: 24, y: 65, delay: 0.75 },
+    { label: "Literature", size: 26, x: 23.2, y: 34.5, delay: 0.85 },
+];
+
+/* Graduated ring: 72 ticks, every sixth one longer */
+const TICKS = Array.from({ length: 72 }, (_, i) => {
+    const a = (i * 5 * Math.PI) / 180;
+    const major = i % 6 === 0;
+    const r1 = 98;
+    const r2 = major ? 90 : 94.5;
+    return {
+        x1: 100 + r1 * Math.sin(a),
+        y1: 100 - r1 * Math.cos(a),
+        x2: 100 + r2 * Math.sin(a),
+        y2: 100 - r2 * Math.cos(a),
+        major,
+    };
+});
+
+/* PREVIEW ONLY: the router library isn't available in the preview, so navigation is stubbed.
+   In your project use Hero.creative.tsx, which keeps useNavigate and navigates to /dashboard. */
+const useNavigate = () => (path: string) => {
+    console.log("navigate to", path);
+};
+
 export default function Hero({ onSearch }: HeroProps) {
     const navigate = useNavigate();
+    const reduceMotion = useReducedMotion();
 
-    // Container animation
-    const containerVariants: Variants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                duration: 0.6,
-                ease: "easeOut",
-            },
-        },
-    };
+    const [active, setActive] = useState(0);
+    const [paused, setPaused] = useState(false);
 
-    // Left content animation
+    /* Light up the droplets one at a time */
+    useEffect(() => {
+        if (reduceMotion || paused) return;
+        const timer = setInterval(() => {
+            setActive((a) => (a + 1) % DROPLETS.length);
+        }, 2200);
+        return () => clearInterval(timer);
+    }, [paused, reduceMotion]);
+
+    // Left column: one staggered entrance on load
     const leftVariants: Variants = {
-        hidden: { opacity: 0, x: -30 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                duration: 0.6,
-                ease: "easeOut",
-            },
-        },
-    };
-
-    // Right content animation
-    const rightVariants: Variants = {
-        hidden: { opacity: 0, x: 30 },
-        visible: {
-            opacity: 1,
-            x: 0,
-            transition: {
-                duration: 0.6,
-                ease: "easeOut",
-            },
-        },
-    };
-
-    // Stagger children
-    const staggerVariants: Variants = {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.1,
-            },
+            transition: { staggerChildren: 0.09, delayChildren: 0.1 },
         },
     };
 
-    // Individual item animation
     const itemVariants: Variants = {
-        hidden: { opacity: 0, y: 15 },
+        hidden: { opacity: 0, y: 14 },
         visible: {
             opacity: 1,
             y: 0,
-            transition: {
-                duration: 0.4,
-                ease: "easeOut",
-            },
+            transition: { duration: 0.45, ease: "easeOut" },
         },
     };
 
     return (
-        <motion.section 
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-50 via-white to-teal-50/40 px-8 py-16 shadow-xl border border-slate-200/60"
+        <motion.section
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="relative overflow-hidden rounded-3xl border border-teal-100 bg-[#F0FAF8]"
+            style={{ fontFamily: "Roboto Slab" }}
         >
-            {/* Decorative Background Elements */}
-            <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute -top-32 -right-32 h-[500px] w-[500px] rounded-full bg-teal-500/5 blur-3xl" />
-                <div className="absolute -bottom-40 -left-40 h-[400px] w-[400px] rounded-full bg-emerald-500/5 blur-3xl" />
-                <div className="absolute top-1/2 right-1/4 h-72 w-72 -translate-y-1/2 rounded-full bg-cyan-500/5 blur-2xl" />
+            {/* Faint concentric rings behind the field, like an eyepiece */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block">
+                <div className="absolute -right-48 top-1/2 h-[640px] w-[640px] -translate-y-1/2 rounded-full border border-teal-200/60" />
+                <div className="absolute -right-24 top-1/2 h-[480px] w-[480px] -translate-y-1/2 rounded-full border border-teal-200/50" />
             </div>
 
-            <div className="relative mx-auto flex max-w-6xl flex-col items-center gap-12 lg:flex-row lg:items-center">
-                {/* Left Content */}
-                <motion.div 
+            <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 py-14 sm:px-10 lg:grid-cols-12 lg:gap-10 lg:px-14 lg:py-20">
+                {/* Left content */}
+                <motion.div
                     variants={leftVariants}
-                    className="flex-1 text-center lg:text-left"
+                    initial={reduceMotion ? false : "hidden"}
+                    animate="visible"
+                    className="text-center lg:col-span-7 lg:text-left"
                 >
-                    <motion.div 
-                        variants={staggerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="space-y-4"
+                    {/* Badge */}
+                    <motion.div
+                        variants={itemVariants}
+                        className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-white px-4 py-2"
                     >
-                        {/* Badge */}
-                        <motion.div 
-                            variants={itemVariants}
-                            className="mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-600/10 to-emerald-600/10 px-5 py-2.5 backdrop-blur-sm border border-teal-500/20"
-                        >
-                            <Sparkles className="h-4 w-4 text-teal-600" />
-                            <span className="text-sm font-semibold text-teal-700 tracking-wide">
-                                MASLD Knowledge Discovery Platform
-                            </span>
-                        </motion.div>
+                        <Sparkles className="h-4 w-4 text-emerald-500" aria-hidden="true" />
+                        <span className="text-sm font-medium text-teal-800">
+                            MASLD Knowledge Discovery Platform
+                        </span>
+                    </motion.div>
 
-                        {/* Main Title */}
-                        <motion.h1
-                            variants={itemVariants}
-                            className="mb-3 bg-gradient-to-r from-slate-900 via-teal-800 to-emerald-800 bg-clip-text text-6xl font-bold text-transparent"
-                            style={{ fontFamily: "Roboto Slab" }}
-                        >
-                            MASHome
-                        </motion.h1>
+                    {/* Main title */}
+                    <motion.h1
+                        variants={itemVariants}
+                        className="mt-6 text-6xl font-bold leading-[0.95] tracking-tight text-[#134E4A] sm:text-7xl lg:text-8xl"
+                        style={{ fontFamily: "Roboto Slab" }}
+                    >
+                        MASHome
+                    </motion.h1>
 
-                        {/* Subtitle */}
-                        <motion.p
-                            variants={itemVariants}
-                            className="mb-4 text-2xl font-semibold text-slate-800 tracking-tight"
-                        >
-                            Accelerating MASLD Research through{" "}
-                            <span className="bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">
-                                Integrated Knowledge
-                            </span>
-                        </motion.p>
+                    {/* Subtitle */}
+                    <motion.p
+                        variants={itemVariants}
+                        className="mx-auto mt-6 max-w-xl text-2xl font-semibold leading-snug tracking-tight text-slate-800 sm:text-3xl lg:mx-0"
+                    >
+                        Accelerating MASLD Research through Integrated Knowledge
+                    </motion.p>
 
-                        {/* Description */}
-                        <motion.p
-                            variants={itemVariants}
-                            className="mx-auto max-w-2xl text-base leading-relaxed text-slate-600 lg:mx-0"
-                        >
-                            Explore interconnected biomedical datasets including therapeutic
-                            targets, approved drugs, genes, biomarkers, bioactives, clinical
-                            trials and scientific literature through a unified research platform.
-                        </motion.p>
+                    {/* Description */}
+                    <motion.p
+                        variants={itemVariants}
+                        className="mx-auto mt-5 max-w-xl text-lg leading-8 text-slate-600 lg:mx-0"
+                    >
+                        Explore interconnected biomedical datasets including therapeutic
+                        targets, approved drugs, genes, biomarkers, bioactives, clinical
+                        trials and scientific literature through a unified research platform.
+                    </motion.p>
 
-                        {/* Stats Section */}
-                        <motion.div 
-                            variants={itemVariants}
-                            className="mt-8 flex flex-wrap justify-center gap-8 lg:justify-start"
-                        >
-                            <div className="flex items-center gap-2">
-                                <div className="rounded-lg bg-teal-50 p-2">
-                                    <BookOpen className="h-5 w-5 text-teal-600" />
+                    {/* Stats */}
+                    <motion.dl
+                        variants={itemVariants}
+                        className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-4 lg:justify-start"
+                    >
+                        {STATS.map(({ value, label, Icon }) => (
+                            <div key={label} className="flex flex-row-reverse items-center gap-3">
+                                <div className="text-left">
+                                    <dt className="text-xs text-slate-500">{label}</dt>
+                                    <dd
+                                        className="text-xl font-bold leading-tight text-[#134E4A]"
+                                        style={{ fontFamily: "Roboto Slab" }}
+                                    >
+                                        {value}
+                                    </dd>
                                 </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-slate-800">50K+</p>
-                                    <p className="text-xs text-slate-500">Publications</p>
-                                </div>
+                                <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-teal-100 bg-white text-teal-700">
+                                    <Icon className="h-5 w-5" aria-hidden="true" />
+                                </span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className="rounded-lg bg-emerald-50 p-2">
-                                    <Flask className="h-5 w-5 text-emerald-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-slate-800">2K+</p>
-                                    <p className="text-xs text-slate-500">Compounds</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <div className="rounded-lg bg-cyan-50 p-2">
-                                    <Microscope className="h-5 w-5 text-cyan-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-semibold text-slate-800">500+</p>
-                                    <p className="text-xs text-slate-500">Clinical Trials</p>
-                                </div>
-                            </div>
-                        </motion.div>
+                        ))}
+                    </motion.dl>
 
-                        {/* CTA Button */}
-                        <motion.div 
-                            variants={itemVariants}
-                            className="mt-8 flex flex-wrap items-center gap-4 justify-center lg:justify-start"
+                    {/* CTA buttons */}
+                    <motion.div
+                        variants={itemVariants}
+                        className="mt-9 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 lg:justify-start"
+                    >
+                        <button
+                            type="button"
+                            onClick={() => navigate("/dashboard")}
+                            className="group inline-flex items-center gap-2.5 rounded-xl bg-teal-700 px-7 py-3.5 text-base font-semibold text-white shadow-sm transition duration-200 hover:bg-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0FAF8] active:scale-[0.98] motion-reduce:active:scale-100"
                         >
-                            <button
-                                onClick={() => navigate("/dashboard")}
-                                className="group relative flex items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-teal-600/30 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-teal-600/40 active:scale-95"
-                            >
-                                <span className="absolute inset-0 bg-gradient-to-r from-teal-700 to-emerald-700 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                                <Search size={20} className="relative z-10" />
-                                <span className="relative z-10">Explore Database</span>
-                                <ArrowRight
-                                    size={18}
-                                    className="relative z-10 transition-transform duration-300 group-hover:translate-x-1"
-                                />
-                            </button>
+                            <Search size={18} aria-hidden="true" />
+                            <span>Explore Database</span>
+                            <ArrowRight
+                                size={18}
+                                aria-hidden="true"
+                                className="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none"
+                            />
+                        </button>
 
-                            {/* Secondary CTA */}
-                            <button className="group flex items-center gap-2 rounded-2xl px-6 py-4 text-base font-medium text-slate-600 transition-all duration-300 hover:bg-slate-100 hover:text-slate-900">
-                                <span>Learn More</span>
-                                <ArrowRight
-                                    size={18}
-                                    className="transition-transform duration-300 group-hover:translate-x-1"
-                                />
-                            </button>
-                        </motion.div>
+                        {/* Secondary CTA */}
+                        <button
+                            type="button"
+                            className="group inline-flex items-center gap-2 rounded-xl px-4 py-3 text-base font-medium text-teal-900 transition-colors duration-200 hover:bg-teal-100/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
+                        >
+                            <span>Learn More</span>
+                            <ArrowRight
+                                size={18}
+                                aria-hidden="true"
+                                className="transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none"
+                            />
+                        </button>
                     </motion.div>
                 </motion.div>
 
-                {/* Right Side - SVG Illustration */}
-                <motion.div 
-                    variants={rightVariants}
-                    className="flex-1"
-                >
-                    <div className="relative">
-                        {/* Floating decorative elements */}
-                        <div className="absolute -top-6 -left-6 h-16 w-16 rounded-full bg-teal-500/10 backdrop-blur-sm border border-teal-500/20" />
-                        <div className="absolute -bottom-4 -right-4 h-12 w-12 rounded-full bg-emerald-500/10 backdrop-blur-sm border border-emerald-500/20" />
-
-                        <svg
-                            viewBox="0 0 500 400"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-auto w-full"
+                {/* Right side: microscope field */}
+                <div className="lg:col-span-5">
+                    <div className="relative mx-auto aspect-square w-full max-w-sm lg:max-w-md">
+                        {/* Slowly turning graduated ring */}
+                        <motion.svg
+                            viewBox="0 0 200 200"
+                            aria-hidden="true"
+                            className="absolute inset-0 h-full w-full"
+                            animate={reduceMotion ? undefined : { rotate: 360 }}
+                            transition={{ duration: 90, ease: "linear", repeat: Infinity }}
                         >
-                            {/* Background decorative circles */}
-                            <circle cx="250" cy="200" r="180" fill="#E6F7F3" opacity="0.3" />
-                            <circle cx="250" cy="200" r="140" fill="#D1F0EA" opacity="0.3" />
-                            <circle cx="250" cy="200" r="100" fill="#B8E8DF" opacity="0.2" />
-
-                            {/* Central DNA/Helix structure */}
-                            <g transform="translate(250, 200)">
-                                {/* Left strand */}
-                                <path
-                                    d="M-80,-150 C-60,-100 -100,-50 -80,0 C-60,50 -100,100 -80,150"
-                                    stroke="#0D9488"
-                                    strokeWidth="4"
-                                    strokeLinecap="round"
-                                    fill="none"
-                                    className="opacity-60"
-                                />
-                                {/* Right strand */}
-                                <path
-                                    d="M80,-150 C60,-100 100,-50 80,0 C60,50 100,100 80,150"
-                                    stroke="#0D9488"
-                                    strokeWidth="4"
-                                    strokeLinecap="round"
-                                    fill="none"
-                                    className="opacity-60"
-                                />
-
-                                {/* Cross connections (rungs) */}
-                                {[-120, -80, -40, 0, 40, 80, 120].map((y, i) => (
-                                    <line
-                                        key={i}
-                                        x1={-80 + (i % 2 === 0 ? 10 : 0)}
-                                        y1={y}
-                                        x2={80 - (i % 2 === 0 ? 0 : 10)}
-                                        y2={y}
-                                        stroke="#14B8A6"
-                                        strokeWidth="2"
-                                        opacity="0.4"
-                                    />
-                                ))}
-
-                                {/* Nodes on strands */}
-                                {[-140, -100, -60, -20, 20, 60, 100, 140].map((y, i) => (
-                                    <g key={`left-${i}`}>
-                                        <circle
-                                            cx={-80 + (i % 2 === 0 ? 15 : -15)}
-                                            cy={y}
-                                            r="8"
-                                            fill="#0D9488"
-                                            opacity="0.8"
-                                        />
-                                        <circle
-                                            cx={-80 + (i % 2 === 0 ? 15 : -15)}
-                                            cy={y}
-                                            r="4"
-                                            fill="#CCFBF1"
-                                        />
-                                    </g>
-                                ))}
-                                {[-140, -100, -60, -20, 20, 60, 100, 140].map((y, i) => (
-                                    <g key={`right-${i}`}>
-                                        <circle
-                                            cx={80 - (i % 2 === 0 ? 15 : -15)}
-                                            cy={y}
-                                            r="8"
-                                            fill="#0D9488"
-                                            opacity="0.8"
-                                        />
-                                        <circle
-                                            cx={80 - (i % 2 === 0 ? 15 : -15)}
-                                            cy={y}
-                                            r="4"
-                                            fill="#CCFBF1"
-                                        />
-                                    </g>
-                                ))}
-                            </g>
-
-                            {/* Floating data nodes */}
-                            <g opacity="0.3">
-                                <circle cx="100" cy="80" r="6" fill="#14B8A6" />
-                                <circle cx="400" cy="100" r="6" fill="#14B8A6" />
-                                <circle cx="80" cy="320" r="6" fill="#14B8A6" />
-                                <circle cx="420" cy="300" r="6" fill="#14B8A6" />
-                                <circle cx="150" cy="350" r="4" fill="#14B8A6" />
-                                <circle cx="350" cy="60" r="4" fill="#14B8A6" />
-                            </g>
-
-                            {/* Connecting lines */}
-                            <g opacity="0.15">
-                                <line x1="100" y1="80" x2="170" y2="120" stroke="#14B8A6" strokeWidth="1" />
-                                <line x1="400" y1="100" x2="330" y2="120" stroke="#14B8A6" strokeWidth="1" />
-                                <line x1="80" y1="320" x2="170" y2="280" stroke="#14B8A6" strokeWidth="1" />
-                                <line x1="420" y1="300" x2="330" y2="280" stroke="#14B8A6" strokeWidth="1" />
-                            </g>
-
-                            {/* Decorative dots around */}
-                            {[30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360].map((angle, i) => (
-                                <circle
+                            {TICKS.map((t, i) => (
+                                <line
                                     key={i}
-                                    cx={250 + 190 * Math.cos(angle * Math.PI / 180)}
-                                    cy={200 + 190 * Math.sin(angle * Math.PI / 180)}
-                                    r="3"
-                                    fill="#14B8A6"
-                                    opacity="0.2"
+                                    x1={t.x1}
+                                    y1={t.y1}
+                                    x2={t.x2}
+                                    y2={t.y2}
+                                    strokeLinecap="round"
+                                    strokeWidth={t.major ? 1.4 : 0.8}
+                                    className={t.major ? "stroke-teal-700" : "stroke-teal-300"}
                                 />
                             ))}
+                        </motion.svg>
+
+                        {/* Fixed pointer: the ring turns past it */}
+                        <svg
+                            viewBox="0 0 12 10"
+                            aria-hidden="true"
+                            className="absolute -top-2 left-1/2 h-2.5 w-3 -translate-x-1/2 fill-emerald-500"
+                        >
+                            <polygon points="0,0 12,0 6,10" />
                         </svg>
+
+                        {/* The field */}
+                        <div className="absolute inset-[6%] overflow-hidden rounded-full border border-teal-200 bg-white/70">
+                            <ul aria-label="Data types in the platform">
+                                {DROPLETS.map((d, i) => {
+                                    const isActive = i === active;
+                                    return (
+                                        <motion.li
+                                            key={d.label}
+                                            initial={reduceMotion ? false : { opacity: 0, scale: 0.7 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{
+                                                type: "spring",
+                                                stiffness: 120,
+                                                damping: 16,
+                                                delay: d.delay,
+                                            }}
+                                            onMouseEnter={() => {
+                                                setActive(i);
+                                                setPaused(true);
+                                            }}
+                                            onMouseLeave={() => setPaused(false)}
+                                            className={`absolute flex aspect-square items-center justify-center rounded-full border text-center transition-colors duration-500 ${
+                                                isActive
+                                                    ? "border-teal-700 bg-teal-600"
+                                                    : "border-teal-300/80 bg-teal-100/60"
+                                            }`}
+                                            style={{
+                                                width: `${d.size}%`,
+                                                left: `${d.x - d.size / 2}%`,
+                                                top: `${d.y - d.size / 2}%`,
+                                            }}
+                                        >
+                                            {/* membrane ring */}
+                                            <span
+                                                aria-hidden="true"
+                                                className={`pointer-events-none absolute inset-1.5 rounded-full border transition-colors duration-500 ${
+                                                    isActive ? "border-teal-300/70" : "border-teal-200"
+                                                }`}
+                                            />
+                                            <span
+                                                className={`relative px-1 font-medium leading-tight transition-colors duration-500 ${
+                                                    i === 0
+                                                        ? "text-sm sm:text-base"
+                                                        : "text-[10px] sm:text-xs"
+                                                } ${isActive ? "text-white" : "text-teal-900"}`}
+                                            >
+                                                {d.label}
+                                            </span>
+                                        </motion.li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
                     </div>
-                </motion.div>
+
+                    {/* Scale bar, as on a microscopy figure */}
+                    <div className="mt-4 flex items-center justify-center gap-3 text-xs text-teal-900/80 sm:text-sm">
+                        <span
+                            aria-hidden="true"
+                            className="relative block h-2 w-14 border-x-2 border-teal-700/70 after:absolute after:inset-x-0 after:top-1/2 after:h-0.5 after:-translate-y-1/2 after:bg-teal-700/70"
+                        />
+                        7 integrated data types
+                    </div>
+                </div>
             </div>
         </motion.section>
     );
