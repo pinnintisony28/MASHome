@@ -154,11 +154,58 @@ export default function GeneDetails({
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <DetailItem label="Global Score" value={property?.global_score?.toString() ?? "—"} />
             <DetailItem label="Clinical Stage" value={property?.max_clinical_stage ?? "—"} />
-            <DetailItem label="Membrane Protein" value={property?.is_in_membrane ? "Yes" : "No"} />
-            <DetailItem label="Secreted" value={property?.is_secreted ? "Yes" : "No"} />
-            <DetailItem label="Has Ligand" value={property?.has_ligand ? "Yes" : "No"} />
-            <DetailItem label="Small Molecule Binder" value={property?.has_small_molecule_binder ? "Yes" : "No"} />
-            <DetailItem label="Has Pocket" value={property?.has_pocket ? "Yes" : "No"} />
+            
+<DetailItem
+  label="Membrane Protein"
+  value={
+    property?.is_in_membrane === true
+      ? "Yes"
+      : property?.is_in_membrane === false
+        ? "No"
+        : "No data"
+  }
+/>
+<DetailItem
+  label="Secreted"
+  value={
+    property?.is_secreted === true
+      ? "Yes"
+      : property?.is_secreted === false
+        ? "No"
+        : "No data"
+  }
+/>
+<DetailItem
+  label="Has Ligand"
+  value={
+    property?.has_ligand === true
+      ? "Yes"
+      : property?.has_ligand === false
+        ? "No"
+        : "No data"
+  }
+/>
+<DetailItem
+  label="Small Molecule Binder"
+  value={
+    property?.has_small_molecule_binder === true
+      ? "Yes"
+      : property?.has_small_molecule_binder === false
+        ? "No"
+        : "No data"
+  }
+/>
+<DetailItem
+  label="Has Pocket"
+  value={
+    property?.has_pocket === true
+      ? "Yes"
+      : property?.has_pocket === false
+        ? "No"
+        : "No data"
+  }
+/>
+
            <DetailItem
   label="Tissue Specificity"
   value={property?.tissue_specificity?.toString() ?? "—"}

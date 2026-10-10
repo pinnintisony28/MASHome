@@ -12,6 +12,25 @@ def to_float(value):
         return float(value)
     except (ValueError, TypeError):
         return None
+
+def to_bool(value):
+    if pd.isna(value) or str(value).strip().lower() in {
+        "", "no data", "none", "nan"
+    }:
+        return None
+
+    if isinstance(value, bool):
+        return value
+
+    text = str(value).strip().lower()
+
+    if text in {"true", "yes", "1"}:
+        return True
+
+    if text in {"false", "no", "0"}:
+        return False
+
+    return None
 # Project Root
 BASE_DIR = Path(__file__).resolve().parents[3]
 
@@ -55,11 +74,12 @@ for _, row in df.iterrows():
         gene_id=gene.id,
         global_score=to_float(row["globalScore"]),
         max_clinical_stage=str(row["maxClinicalStage"]) if pd.notna(row["maxClinicalStage"]) else None,
-        is_in_membrane=bool(row["isInMembrane"]) if pd.notna(row["isInMembrane"]) else False,
-        is_secreted=bool(row["isSecreted"]) if pd.notna(row["isSecreted"]) else False,
-        has_ligand=bool(row["hasLigand"]) if pd.notna(row["hasLigand"]) else False,
-        has_small_molecule_binder=bool(row["hasSmallMoleculeBinder"]) if pd.notna(row["hasSmallMoleculeBinder"]) else False,
-        has_pocket=bool(row["hasPocket"]) if pd.notna(row["hasPocket"]) else False,
+        is_in_membrane=to_bool(row["isInMembrane"]),
+        is_secreted=to_bool(row["isSecreted"]),
+        has_ligand=to_bool(row["hasLigand"]),
+        has_small_molecule_binder=to_bool(row["hasSmallMoleculeBinder"]),
+        
+has_pocket=to_bool(row["hasPocket"]),
        tissue_specificity=to_float(row["tissueSpecificity"]),
 
        tissue_distribution=to_float(row["tissueDistribution"]),

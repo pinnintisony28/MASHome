@@ -76,12 +76,14 @@ function Helix({ animated }: { animated: boolean }) {
 export default function GeneWelcome({ onQuickSearch }: GeneWelcomeProps) {
   const reduceMotion = useReducedMotion();
 
-  const quickSearches = [
-    { term: "MIR122", kind: "Gene symbol" },
-    { term: "H19", kind: "Gene symbol" },
-    { term: "MEG3", kind: "Gene symbol" },
-    { term: "RNA Gene", kind: "Gene type" },
-  ];
+  
+const quickSearches = [
+  { term: "PNPLA3", kind: "MASLD gene" },
+  { term: "TM6SF2", kind: "MASLD gene" },
+  { term: "MBOAT7", kind: "MASLD gene" },
+  { term: "HSD17B13", kind: "MASLD gene" },
+];
+
 
   return (
     <motion.section
