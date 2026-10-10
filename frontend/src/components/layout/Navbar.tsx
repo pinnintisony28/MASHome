@@ -46,7 +46,9 @@ export default function Navbar() {
     useState(false);
 
   return (
-    <header className="relative z-50 border-b border-slate-200/60 bg-white/95 backdrop-blur-md">
+    
+<header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/95 backdrop-blur-md">
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
 
         {/* Logo */}
@@ -57,7 +59,9 @@ export default function Navbar() {
           <img
             src={Logo}
             alt="MASHome"
-            className="h-8 w-auto sm:h-9 md:h-10 lg:h-12 xl:h-14"
+            
+className="h-12 w-auto sm:h-12 md:h-10 lg:h-12 xl:h-14"
+
           />
         </NavLink>
 

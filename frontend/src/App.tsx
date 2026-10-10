@@ -22,6 +22,7 @@ import AssociatedDiseaseDetailsPage from "./pages/AssociatedDiseases/AssociatedD
 import OtherTherapies from "./pages/OtherTherapies";
 import OtherTherapyDetailsPage from "./pages/OtherTherapyDetails";
 import Pathways from "./pages/Pathways/Pathways";
+import Publications from "./pages/Publications";
 
 function App() {
    const [appReady, setAppReady] = useState(false);
@@ -106,6 +107,7 @@ function App() {
           />
 
           <Route path="/" element={<Home />} />
+          <Route path="/publications" element={<Publications />} />
         </Route>
       </Routes>
     

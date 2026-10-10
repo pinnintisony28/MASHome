@@ -44,6 +44,7 @@ from app.routers import other_therapies
 from app.models.pathway import Pathway
 from app.routers.pathways import router as pathways_router
 from fastapi.staticfiles import StaticFiles
+from app.routers import publications
 app = FastAPI()
 app.mount(
     "/pathway-images",
@@ -76,6 +77,7 @@ app.include_router(medical_devices_router)
 app.include_router(associated_diseases_router)
 app.include_router(other_therapies.router)
 app.include_router(pathways_router)
+app.include_router(publications.router)
 Base.metadata.create_all(bind=engine)
 @app.get("/")
 def home():

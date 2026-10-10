@@ -1,37 +1,10 @@
+
 import { useEffect, useState } from "react";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import Logo from "../../assets/final.png";
 
 type InitialLoaderProps = {
   onComplete: () => void;
 };
-
-// Letter-by-letter typing animation
-function TypingMessage() {
-  const text = "Hello ";
-  const [displayText, setDisplayText] = useState("");
-
-  useEffect(() => {
-    let index = 0;
-
-    const interval = setInterval(() => {
-      if (index < text.length) {
-        index += 1;
-        setDisplayText(text.slice(0, index));
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <span>
-      {displayText}
-      <span className="ml-0.5 animate-pulse">|</span>
-    </span>
-  );
-}
 
 export default function InitialLoader({
   onComplete,
@@ -39,17 +12,18 @@ export default function InitialLoader({
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const fadeTimer = setTimeout(() => {
       setFadeOut(true);
-
-      const completeTimer = setTimeout(() => {
-        onComplete();
-      }, 500);
-
-      return () => clearTimeout(completeTimer);
     }, 1800);
 
-    return () => clearTimeout(timer);
+    const completeTimer = setTimeout(() => {
+      onComplete();
+    }, 2300);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(completeTimer);
+    };
   }, [onComplete]);
 
   return (
@@ -66,42 +40,11 @@ export default function InitialLoader({
         }
       `}
     >
-      <div className="flex flex-col items-center">
-
-        {/* Lottie Animation */}
-        <div className="h-40 w-40 sm:h-48 sm:w-48">
-          <DotLottieReact
-            src="/loading.lottie"
-            loop
-            autoplay
-          />
-        </div>
-
-        {/* Text */}
-        <div className="-mt-2 text-center">
-
-          {/* <h1
-            className="text-2xl font-bold text-slate-800"
-            style={{
-              fontFamily: "Roboto Slab",
-            }}
-          >
-            MASHome
-          </h1> */}
-
-          {/* Letter-by-letter typing */}
-          <h1
-            className="text-2xl font-bold text-slate-800"
-            style={{
-              fontFamily: "Roboto Slab",
-            }}
-          >
-            <TypingMessage />
-          </h1>
-
-        </div>
-
-      </div>
+      <img
+        src={Logo}
+        alt="MASHome"
+        className="h-24 w-auto object-contain opacity-0 animate-[fadeIn_1s_ease-out_forwards] sm:h-28"
+      />
     </div>
   );
 }

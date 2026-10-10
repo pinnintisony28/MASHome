@@ -1,8 +1,7 @@
 import {
-  BookOpen,
   Database,
   Microscope,
-  Network,
+  Search,
 } from "lucide-react";
 import { motion , type Variants } from "framer-motion";
 
@@ -16,12 +15,12 @@ const highlights = [
     iconColor: "#10B981",
   },
   {
-    icon: Network,
-    title: "Knowledge Discovery",
+    icon: Search,
+    title: "Advanced Search",
     description:
-      "Explore relationships among targets, drugs, genes, biomarkers, and clinical trials.",
-    color: "from-purple-50 to-indigo-50",
-    iconColor: "#8B5CF6",
+      "Search genes, targets, drugs, biomarkers, and publications from a single place.",
+    color: "from-blue-50 to-sky-50",
+    iconColor: "#3B82F6",
   },
   {
     icon: Microscope,
@@ -30,14 +29,6 @@ const highlights = [
       "Designed to assist researchers, faculty members, and students working on MASLD.",
     color: "from-amber-50 to-orange-50",
     iconColor: "#F59E0B",
-  },
-  {
-    icon: BookOpen,
-    title: "Scientific Resources",
-    description:
-      "Provide organized biomedical information for learning, exploration, and future research.",
-    color: "from-rose-50 to-pink-50",
-    iconColor: "#F43F5E",
   },
 ];
 
@@ -96,10 +87,15 @@ export default function AboutSection() {
       whileInView="visible"
       viewport={{ once: false, margin: "-100px" }}
       variants={containerVariants}
-      className="mt-16 px-4 py-16 rounded-3xl bg-gradient-to-br from-slate-50 via-white to-emerald-50/30 border border-slate-200/40"
+      className="about-root relative mt-16 overflow-hidden rounded-3xl border border-slate-200/60 bg-gradient-to-br from-slate-50 via-white to-emerald-50/40 px-4 py-14 sm:px-10 sm:py-16"
     >
-      <div className="max-w-6xl mx-auto">
-        <div className="grid items-start gap-12 lg:grid-cols-2">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300..800&display=swap');
+        .about-root, .about-root * { font-family: 'Roboto Slab', Georgia, serif; }
+      `}</style>
+
+      <div className="relative max-w-6xl mx-auto">
+        <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           {/* Left Column */}
           <motion.div variants={leftVariants}>
             <motion.div variants={itemVariants} className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 mb-4">
@@ -117,13 +113,19 @@ export default function AboutSection() {
               </h2>
             </motion.div>
 
-            <motion.p variants={itemVariants} className="text-slate-600 leading-relaxed mb-4" style={{ fontFamily: "Roboto Slab" }}>
+            <motion.p
+              variants={itemVariants}
+              className="mt-6 text-base leading-8 text-slate-700"
+            >
               MASHome is a comprehensive biomedical knowledge discovery
               platform developed to support research in Metabolic
               Dysfunction-Associated Steatotic Liver Disease (MASLD).
             </motion.p>
 
-            <motion.p variants={itemVariants} className="text-slate-600 leading-relaxed" style={{ fontFamily: "Roboto Slab" }}>
+            <motion.p
+              variants={itemVariants}
+              className="mt-4 text-base leading-8 text-slate-600"
+            >
               The platform integrates therapeutic targets, approved
               drugs, genes, biomarkers, bioactives, clinical trials,
               and scientific literature into a single searchable
@@ -132,46 +134,73 @@ export default function AboutSection() {
             </motion.p>
           </motion.div>
 
-          {/* Right Column */}
-          <motion.div 
+          {/* Right Column: bento tiles */}
+          <motion.div
             variants={rightVariants}
-            className="space-y-4"
+            className="grid gap-4 sm:grid-cols-2"
           >
             {highlights.map((item, index) => {
               const Icon = item.icon;
+              const featured = index === 0;
+              const wide = index === 0;
 
               return (
                 <motion.div
                   key={item.title}
                   variants={itemVariants}
-                  whileHover={{ 
-                    x: 4,
-                    transition: { duration: 0.2 }
+                  whileHover={{
+                    y: -4,
+                    transition: { duration: 0.2 },
                   }}
-                  className={`border border-slate-200 rounded-xl p-5 hover:border-emerald-200 transition-colors bg-gradient-to-br ${item.color}`}
+                  className={`group relative overflow-hidden rounded-2xl p-6 transition-shadow duration-300 hover:shadow-xl sm:p-7 ${
+                    wide ? "sm:col-span-2" : ""
+                  } ${
+                    featured
+                      ? "bg-emerald-800 text-white shadow-lg shadow-emerald-900/20"
+                      : "border border-slate-200 bg-white shadow-sm hover:shadow-slate-900/10"
+                  }`}
                 >
-                  <div className="flex items-start gap-4" style={{ fontFamily: "Roboto Slab" }}>
-                    <motion.div 
-                      whileHover={{ 
-                        scale: 1.1,
-                        transition: { duration: 0.2 }
-                      }}
-                      className={`flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br ${item.color} flex items-center justify-center border border-white/50`}
-                    >
-                      <Icon size={20} style={{ color: item.iconColor }} />
-                    </motion.div>
+                  {/* Oversized background icon */}
+                  <Icon
+                    aria-hidden="true"
+                    size={featured ? 150 : 110}
+                    strokeWidth={1.25}
+                    className="pointer-events-none absolute -bottom-6 -right-4 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-105"
+                    style={{
+                      color: featured ? "#ffffff" : item.iconColor,
+                      opacity: featured ? 0.1 : 0.09,
+                    }}
+                  />
 
-                    <div>
-                      <h3
-                        className="text-sm font-semibold text-slate-900 mb-1"
-                        style={{ fontFamily: "Roboto Slab" }}
-                      >
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-slate-600 leading-relaxed">
-                        {item.description}
-                      </p>
+                  <div className="relative">
+                    <div
+                      className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl"
+                      style={
+                        featured
+                          ? { backgroundColor: "rgba(255,255,255,0.15)" }
+                          : { backgroundColor: `${item.iconColor}1A` }
+                      }
+                    >
+                      <Icon
+                        size={24}
+                        style={{ color: featured ? "#ffffff" : item.iconColor }}
+                      />
                     </div>
+
+                    <h3
+                      className={`text-lg font-semibold leading-snug ${
+                        featured ? "text-white" : "text-slate-900"
+                      }`}
+                    >
+                      {item.title}
+                    </h3>
+                    <p
+                      className={`mt-2 max-w-md text-sm leading-6 ${
+                        featured ? "text-emerald-50/85" : "text-slate-600"
+                      }`}
+                    >
+                      {item.description}
+                    </p>
                   </div>
                 </motion.div>
               );
