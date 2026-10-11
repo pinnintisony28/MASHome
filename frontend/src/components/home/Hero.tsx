@@ -9,20 +9,20 @@ import {
 } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+
 type HeroProps = {
     onSearch?: () => void;
 };
 
 /*
   Design notes
-  - A calm, two-column hero: message and actions on the left, a clean list of the
-    platform's data types on the right.
-  - The data types highlight one after another (a quiet guided tour of what is inside);
-    hovering a row pauses the tour on it.
-  - Palette: ink teal #134E4A, teal-700 (action), teal-50/100 (tints), slate for text,
-    emerald-500 (one small accent). Typography: Roboto Slab throughout.
+  - Left column restyled only; right column (data-type hub) content is unchanged.
+  - Background: white, with a soft linear gradient on the right side only
+    (emerald, fades out toward the middle); no colour glows.
+  - Typography: Roboto Slab throughout; only the second half of the main
+    heading uses a cursive script (Dancing Script).
+  - Text colours are soft (teal-700 / slate-500 / slate-600), nothing near black.
   - Reduced motion: no entrance and no automatic tour.
-  - Background: clean, clear linear gradient (white → soft teal → white).
 */
 
 const STATS = [
@@ -81,37 +81,23 @@ export default function Hero({ onSearch }: HeroProps) {
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="hero-bg relative overflow-hidden rounded-3xl border border-teal-100"
-            style={{ fontFamily: "Roboto Slab" }}
+            className="hero-bg relative overflow-hidden rounded-3xl border border-slate-200 bg-white"
+            style={{ fontFamily: "'Roboto Slab', serif" }}
         >
             <style>{`
-                .hero-bg {
-                    /* Clean, clear linear gradient: white → soft teal → white */
-                    background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 50%, #ffffff 100%);
-                }
-                @keyframes hero-drift {
-                    from { transform: translate(0, 0) scale(1); }
-                    to   { transform: translate(40px, 28px) scale(1.12); }
-                }
-                .hero-glow { animation: hero-drift 14s ease-in-out infinite alternate; }
-                @media (prefers-reduced-motion: reduce) {
-                    .hero-glow { animation: none; }
+                @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Roboto+Slab:wght@300;400;500&display=swap');
+                .hero-cursive {
+                    font-family: 'Dancing Script', cursive;
+                    font-weight: 600;
                 }
             `}</style>
 
-            {/* Soft colour glows behind the content */}
+            {/* Right-side linear gradient (decorative).
+                Mobile: fades up from the bottom, behind the stacked hub.
+                Desktop (lg): covers the right ~45% and fades out to the left. */}
             <div
                 aria-hidden="true"
-                className="hero-glow pointer-events-none absolute -right-24 -top-28 h-96 w-96 rounded-full bg-teal-200/50 blur-3xl"
-            />
-            <div
-                aria-hidden="true"
-                className="hero-glow pointer-events-none absolute -bottom-32 -left-24 h-96 w-96 rounded-full bg-emerald-200/50 blur-3xl"
-                style={{ animationDuration: "19s", animationDirection: "alternate-reverse" }}
-            />
-            <div
-                aria-hidden="true"
-                className="pointer-events-none absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-100/60 blur-3xl"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-emerald-200/70 via-emerald-100/60 to-transparent lg:inset-y-0 lg:left-auto lg:right-0 lg:h-auto lg:w-[45%] lg:bg-gradient-to-l"
             />
 
             <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-14 sm:px-10 lg:grid-cols-12 lg:gap-14 lg:px-14 lg:py-20">
@@ -125,27 +111,30 @@ export default function Hero({ onSearch }: HeroProps) {
                     {/* Badge */}
                     <motion.div
                         variants={itemVariants}
-                        className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-4 py-1.5"
+                        className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5"
                     >
-                        <Sparkles className="h-4 w-4 text-emerald-500" aria-hidden="true" />
-                        <span className="text-sm font-normal text-teal-800">
+                        <Sparkles className="h-4 w-4 text-teal-500" aria-hidden="true" />
+                        <span className="text-sm font-normal tracking-wide text-slate-600">
                             MASLD Knowledge Discovery Platform
                         </span>
                     </motion.div>
 
-                    {/* Main title */}
+                    {/* Main title: Roboto Slab + cursive */}
                     <motion.h1
                         variants={itemVariants}
-                        className="mt-6 text-5xl font-medium leading-none tracking-tight text-teal-800 sm:text-6xl lg:text-7xl"
-                        style={{ fontFamily: "Roboto Slab" }}
+                        className="mt-6 text-5xl leading-none tracking-tight text-teal-700 sm:text-6xl lg:text-7xl"
+                        style={{ fontFamily: "'Roboto Slab', serif" }}
                     >
-                        MASHome
+                        <span className="font-normal">MAS</span>
+                        <span className="hero-cursive ml-1 text-[1.15em] text-teal-600">
+                            Home
+                        </span>
                     </motion.h1>
 
                     {/* Subtitle */}
                     <motion.p
                         variants={itemVariants}
-                        className="mt-5 max-w-xl text-xl font-normal leading-snug text-slate-700 sm:text-2xl"
+                       className="mt-5 max-w-xl text-xl font-normal leading-snug text-slate-700 sm:text-2xl"
                     >
                         Accelerating MASLD Research through Integrated Knowledge
                     </motion.p>
@@ -153,7 +142,7 @@ export default function Hero({ onSearch }: HeroProps) {
                     {/* Description */}
                     <motion.p
                         variants={itemVariants}
-                        className="mt-4 max-w-xl text-base font-light leading-8 text-slate-600 sm:text-lg"
+                       className="mt-4 max-w-xl text-base font-normal leading-8 text-slate-600 sm:text-lg"
                     >
                         Explore interconnected biomedical datasets including therapeutic
                         targets, approved drugs, genes, biomarkers, bioactives, clinical
@@ -163,33 +152,19 @@ export default function Hero({ onSearch }: HeroProps) {
                     {/* Stats */}
                     <motion.dl
                         variants={itemVariants}
-                        className="mt-7 flex flex-wrap gap-x-7 gap-y-3"
+                        className="mt-7 flex flex-wrap gap-x-8 gap-y-3"
                     >
-                        {STATS.map(({ value, label, Icon }, index) => (
-                            <div
-                                key={label}
-                                className="flex items-center gap-2.5"
-                            >
-                                <span
-                                    className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br text-white ${
-                                        [
-                                            "from-teal-400 to-teal-600",
-                                            "from-emerald-400 to-emerald-600",
-                                            "from-cyan-400 to-sky-600",
-                                        ][index % 3]
-                                    }`}
-                                >
+                        {STATS.map(({ value, label, Icon }) => (
+                            <div key={label} className="flex items-center gap-2.5">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
                                     <Icon className="h-4 w-4" aria-hidden="true" />
                                 </span>
 
                                 <div className="flex flex-col-reverse">
-                                    <dt className="text-xs text-slate-500">
+                                    <dt className="text-xs font-normal text-slate-500">
                                         {label}
                                     </dt>
-                                    <dd
-                                        className="text-base font-medium leading-tight text-teal-800 sm:text-lg"
-                                        style={{ fontFamily: "Roboto Slab" }}
-                                    >
+                                    <dd className="text-base font-medium leading-tight text-teal-700 sm:text-lg">
                                         {value}
                                     </dd>
                                 </div>
@@ -205,7 +180,7 @@ export default function Hero({ onSearch }: HeroProps) {
                         <button
                             type="button"
                             onClick={() => navigate("/dashboard")}
-                            className="group inline-flex items-center gap-2.5 rounded-xl bg-teal-700 px-7 py-3.5 text-base font-medium text-white shadow-sm transition duration-200 hover:bg-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600 focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:active:scale-100"
+                            className="group inline-flex items-center gap-2.5 rounded-xl bg-teal-600 px-7 py-3.5 text-base font-medium text-white shadow-sm transition duration-200 hover:bg-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:active:scale-100"
                         >
                             <Search size={18} aria-hidden="true" />
                             <span>Explore Database</span>
@@ -215,7 +190,7 @@ export default function Hero({ onSearch }: HeroProps) {
                         <button
                             type="button"
                             onClick={() => navigate("/publications")}
-                            className="group inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3.5 text-base font-medium text-slate-800 transition-colors duration-200 hover:border-teal-600 hover:text-teal-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-600"
+                            className="group inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-base font-medium text-slate-600 transition-colors duration-200 hover:border-teal-500 hover:text-teal-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                         >
                             <span>Publications</span>
                             <ArrowRight
@@ -227,7 +202,7 @@ export default function Hero({ onSearch }: HeroProps) {
                     </motion.div>
                 </motion.div>
 
-                {/* Right side: MASLD hub with its data types */}
+                {/* Right side: MASLD hub with its data types (unchanged) */}
                 <div className="lg:col-span-5">
                     <div
                         className="relative mx-auto aspect-square w-full max-w-md"

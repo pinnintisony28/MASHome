@@ -65,7 +65,7 @@ export default function AssociatedDiseaseDetailsPage() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto max-w-5xl px-4 py-12" style={{fontFamily:"Roboto Slab"}}>
         <p className="text-sm text-red-500">
           {error}
         </p>

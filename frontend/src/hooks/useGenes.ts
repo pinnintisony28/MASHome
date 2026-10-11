@@ -40,6 +40,7 @@ export default function useGenes() {
     try {
       setLoading(true);
       setError("");
+      setHasSearched(true);
 
       const data = await GeneService.getDetails(symbol);
 

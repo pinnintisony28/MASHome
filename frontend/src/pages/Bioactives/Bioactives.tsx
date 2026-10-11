@@ -58,7 +58,13 @@ export default function Bioactives() {
 
       {/* Search Section */}
       <div className="mb-6">
-        <BioactiveSearch onSearch={searchBioactives} onClear={clearSearch} />
+      <BioactiveSearch
+  onSearch={searchBioactives}
+  onClear={clearSearch}
+  onSelect={(bioactive) => {
+    selectBioactive(bioactive.bioactive_id);
+  }}
+/>
       </div>
 
       {/* Loading State */}

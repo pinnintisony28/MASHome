@@ -17,6 +17,7 @@ export default function Patents() {
     searchPatents,
     clearSearch,
     setPage,
+    selectPatent,
   } = usePatents();
 
   return (
@@ -42,8 +43,10 @@ export default function Patents() {
               style={{ fontFamily: "Roboto Slab" }}
             >
               Patents
+              <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
+          <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
             </h1>
-
+           
             <p
               className="mt-1 text-sm text-slate-500"
               style={{ fontFamily: "Roboto Slab" }}
@@ -58,9 +61,10 @@ export default function Patents() {
       {/* Search */}
       <div className="mb-6">
         <PatentSearch
-          onSearch={searchPatents}
-          onClear={clearSearch}
-        />
+  onSearch={searchPatents}
+  onClear={clearSearch}
+  onSelect={selectPatent}
+/>
       </div>
 
       {/* Loading */}

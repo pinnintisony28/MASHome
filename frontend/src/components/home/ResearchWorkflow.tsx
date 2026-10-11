@@ -244,8 +244,13 @@ export default function ResearchWorkflow() {
       className="wf-root mt-24 rounded-3xl border border-slate-200 bg-white px-4 py-14 shadow-sm sm:px-10 sm:py-16"
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300..800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300..800&family=Dancing+Script:wght@500;600&display=swap');
         .wf-root, .wf-root * { font-family: 'Roboto Slab', Georgia, serif; }
+        /* Cursive half of the heading (higher specificity than the rule above) */
+        .wf-root .wf-cursive {
+          font-family: 'Dancing Script', cursive;
+          font-weight: 600;
+        }
         /* Below xl the stepper is a fixed window: it slides, it never scrolls */
         .wf-viewport {
           -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 18%, #000 82%, transparent 100%);
@@ -258,15 +263,22 @@ export default function ResearchWorkflow() {
 
       <div className="mx-auto max-w-6xl">
         {/* Header */}
-        <div className="max-w-2xl">
-          <h2 className="inline-block text-1xl font-normal tracking-tight text-slate-900 sm:text-2xl">
-            Research Workflow
+        <div className="max-w-3xl">
+          <h2 className="text-4xl font-normal leading-tight tracking-tight text-slate-700 lg:text-4xl">
+            Research{" "}
+            <span className="wf-cursive text-[1.1em] text-emerald-600">
+              Workflow
+            </span>
             <span
               aria-hidden="true"
-              className="mt-2 block h-1 w-1/2 rounded-full bg-emerald-600"
-            />
+              className="mt-3 flex items-center gap-2"
+            >
+              <span className="h-1 w-24 rounded-full bg-emerald-600" />
+              <span className="h-1 w-6 rounded-full bg-emerald-300" />
+              <span className="h-1 w-1.5 rounded-full bg-emerald-200" />
+            </span>
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
+          <p className="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">
             MASHome integrates biomedical knowledge across the complete research
             pipeline.
           </p>

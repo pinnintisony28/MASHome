@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import useDrugs from "../../hooks/useDrugs";
 import DrugSearch from "../../components/drug/DrugSearch";
 import DrugTable from "../../components/drug/DrugTable";
 import DrugDetails from "../../components/drug/DrugDetails";
 import DrugWelcome from "../../components/drug/DrugWelcome";
+import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Drugs() {
@@ -18,8 +20,15 @@ export default function Drugs() {
     clearSelection,
   } = useDrugs();
 
+  const showDetails = !!selectedDrug;
+
+  // Start at the top whenever we switch between table and details
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [showDetails]);
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -37,10 +46,15 @@ export default function Drugs() {
               <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
               <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
             </h1>
-            <p className="mt-4 text-sm text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
-              Explore approved drugs, therapeutic categories, dosage forms,
-              administration routes, and detailed drug descriptions.
-            </p>
+            {!showDetails && (
+              <p
+                className="mt-4 text-sm text-slate-500"
+                style={{ fontFamily: "Roboto Slab" }}
+              >
+                Explore approved drugs, therapeutic categories, dosage forms,
+                administration routes, and detailed drug descriptions.
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -49,17 +63,22 @@ export default function Drugs() {
         </div>
       </div>
 
-      {/* Search Section */}
-      <div className="mb-6">
-        <DrugSearch onSearch={searchDrugs} onClear={clearSearch} />
-      </div>
+      {/* Search Section (hidden on the details page) */}
+      {!showDetails && (
+        <div className="mb-6">
+          <DrugSearch onSearch={searchDrugs} onClear={clearSearch} />
+        </div>
+      )}
 
       {/* Loading State */}
       {loading && (
         <div className="flex items-center justify-center py-12">
           <div className="flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
-            <p className="text-sm text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
+            <p
+              className="text-sm text-slate-500"
+              style={{ fontFamily: "Roboto Slab" }}
+            >
               Loading drugs...
             </p>
           </div>
@@ -69,7 +88,10 @@ export default function Drugs() {
       {/* Error State */}
       {error && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-6 py-4">
-          <p className="text-sm text-red-600" style={{ fontFamily: "Roboto Slab" }}>
+          <p
+            className="text-sm text-red-600"
+            style={{ fontFamily: "Roboto Slab" }}
+          >
             {error}
           </p>
         </div>
@@ -80,41 +102,56 @@ export default function Drugs() {
         <DrugWelcome onQuickSearch={searchDrugs} />
       )}
 
-      {/* Results Section */}
+      {/* Results / Details: one view at a time */}
       {!loading && !error && hasSearched && (
-        <div className="mt-8">
-          {/* Results Header */}
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
-              {drugs.length} drug{drugs.length !== 1 ? "s" : ""} found
-            </p>
-            {selectedDrug && (
+        <>
+          {showDetails ? (
+            /* ---------- Details "page" ---------- */
+            <motion.div
+              key="details"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-8 space-y-4"
+            >
               <button
                 onClick={clearSelection}
-                className="text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                className="group flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors"
                 style={{ fontFamily: "Roboto Slab" }}
               >
-                Clear selection
+                <ArrowLeft
+                  size={16}
+                  className="transition-transform duration-200 group-hover:-translate-x-1"
+                />
+                <span>Back to table</span>
               </button>
-            )}
-          </div>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Left Column - Drug Table */}
-            <div className="h-[calc(100vh-380px)] min-h-[400px]">
-              <DrugTable
-                drugs={drugs}
-                selectedDrugId={selectedDrug?.id}
-                onSelect={selectDrug}
-              />
-            </div>
-
-            {/* Right Column - Drug Details */}
-            <div className="h-[calc(100vh-380px)] min-h-[400px]">
               <DrugDetails drug={selectedDrug} />
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          ) : (
+            /* ---------- Table view ---------- */
+            <motion.div
+              key="table"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-8"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <p
+                  className="text-sm text-slate-500"
+                  style={{ fontFamily: "Roboto Slab" }}
+                >
+                  {drugs.length} drug{drugs.length !== 1 ? "s" : ""} found
+                </p>
+              </div>
+
+              <div className="h-[calc(100vh-380px)] min-h-[400px]">
+                <DrugTable drugs={drugs} onSelect={selectDrug} />
+              </div>
+            </motion.div>
+          )}
+        </>
       )}
     </motion.div>
   );

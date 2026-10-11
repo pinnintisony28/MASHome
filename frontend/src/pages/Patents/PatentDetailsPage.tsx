@@ -49,7 +49,7 @@ export default function PatentDetailsPage() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-12">
+      <div className="mx-auto max-w-5xl px-4 py-12" >
         <p className="text-sm text-red-500">
           {error}
         </p>
@@ -84,7 +84,10 @@ export default function PatentDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div
+  className="min-h-screen bg-slate-50"
+  style={{ fontFamily: "Roboto Slab" }}
+>
       <div className="mx-auto max-w-5xl px-4 py-8">
 
         {/* Back */}

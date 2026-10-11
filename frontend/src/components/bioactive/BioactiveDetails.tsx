@@ -47,7 +47,7 @@ export default function BioactiveDetails({
             <Leaf size={28} className="text-slate-400" />
           </div>
           <h2
-            className="text-lg font-bold text-slate-700"
+            className="text-lg font-medium text-slate-700"
             style={{ fontFamily: "Roboto Slab" }}
           >
             Bioactive Details
@@ -79,7 +79,7 @@ console.log("===========================");
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <h2
-              className="text-lg font-bold text-slate-800 truncate"
+              className="text-lg font-medium text-slate-800 truncate"
               style={{ fontFamily: "Roboto Slab" }}
             >
               {bioactive.bioactive_name || "Unknown Compound"}
@@ -133,7 +133,7 @@ console.log("===========================");
       <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         <div className="mt-6">
  <h3
-  className="text-sm font-semibold text-slate-700 flex items-center gap-2"
+  className="text-sm font-normal text-slate-700 flex items-center gap-2"
   style={{ fontFamily: "Roboto Slab" }}
 >
   <span className="w-1 h-4 bg-green-500 rounded-full" />

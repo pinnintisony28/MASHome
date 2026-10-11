@@ -1,24 +1,104 @@
-import { useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import GeneService from "../../services/geneService";
+import type { Gene } from "../../types/gene";
 
 type GeneSearchProps = {
   onSearch: (keyword: string) => void;
   onClear: () => void;
+  onSelect: (symbol: string) => void;
 };
 
-export default function GeneSearch({ onSearch, onClear }: GeneSearchProps) {
+export default function GeneSearch({
+  onSearch,
+  onClear,
+  onSelect,
+}: GeneSearchProps) {
   const [keyword, setKeyword] = useState("");
-  const reduceMotion = useReducedMotion();
+  const [suggestions, setSuggestions] = useState<Gene[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
+  const reduceMotion = useReducedMotion();
+  const containerRef = useRef<HTMLDivElement>(null);
   const hasText = keyword.trim() !== "";
 
+  useEffect(() => {
+    const value = keyword.trim();
+
+    if (!value) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      setLoadingSuggestions(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const timer = window.setTimeout(async () => {
+      setLoadingSuggestions(true);
+
+      try {
+        const results = await GeneService.search(value);
+
+        if (!cancelled) {
+          setSuggestions(results.slice(0, 50));
+          setShowSuggestions(true);
+        }
+      } catch {
+        if (!cancelled) {
+          setSuggestions([]);
+          setShowSuggestions(true);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingSuggestions(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [keyword]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   function handleSearch() {
-    onSearch(keyword);
+    setShowSuggestions(false);
+    onSearch(keyword.trim());
   }
+
+  function handleSelect(gene: Gene) {
+  if (!gene.symbol) return;
+
+  setKeyword(gene.symbol);
+  setShowSuggestions(false);
+  onSelect(gene.symbol);
+}
 
   function handleClear() {
     setKeyword("");
+    setSuggestions([]);
+    setShowSuggestions(false);
     onClear();
   }
 
@@ -27,23 +107,22 @@ export default function GeneSearch({ onSearch, onClear }: GeneSearchProps) {
       initial={reduceMotion ? false : { opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="relative overflow-hidden rounded-2xl bg-emerald-900 p-6 shadow-lg shadow-emerald-950/10 sm:p-7"
+      className="relative overflow-visible rounded-2xl bg-emerald-900 p-6 shadow-lg shadow-emerald-950/10 sm:p-7"
       style={{ fontFamily: "Roboto Slab" }}
     >
-      {/* Soft depth, no motion */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-teal-400/10"
       />
 
       <div className="relative">
-        {/* Heading */}
         <h2
           className="text-lg font-bold tracking-tight text-white"
           style={{ fontFamily: "Roboto Slab" }}
         >
           Search genes
         </h2>
+
         <p
           className="mt-1 text-sm text-emerald-100/80"
           style={{ fontFamily: "Roboto Slab" }}
@@ -51,9 +130,8 @@ export default function GeneSearch({ onSearch, onClear }: GeneSearchProps) {
           Find genes by symbol, name or type.
         </p>
 
-        {/* Search row */}
         <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-end">
-          <div className="relative flex-1">
+          <div ref={containerRef} className="relative z-20 flex-1">
             <Search
               className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-emerald-200/70"
               size={20}
@@ -63,17 +141,62 @@ export default function GeneSearch({ onSearch, onClear }: GeneSearchProps) {
             <input
               type="text"
               value={keyword}
+              onFocus={() => {
+                if (keyword.trim()) setShowSuggestions(true);
+              }}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
+                  e.preventDefault();
                   handleSearch();
+                } else if (e.key === "Escape") {
+                  setShowSuggestions(false);
                 }
               }}
               aria-label="Search genes"
+              aria-autocomplete="list"
+              aria-expanded={showSuggestions}
               placeholder="Search by gene symbol, gene name or gene type..."
+              autoComplete="off"
               className="w-full rounded-t-lg border-0 border-b-2 border-emerald-700 bg-transparent py-3 pl-11 pr-3 text-base text-white placeholder:text-emerald-200/70 transition-colors duration-200 hover:border-emerald-500 focus:border-teal-300 focus:bg-white/5 focus:outline-none"
               style={{ fontFamily: "Roboto Slab" }}
             />
+
+            {showSuggestions && (
+              <div
+                className="absolute left-0 right-0 top-full mt-2 max-h-72 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-xl"
+                style={{ fontFamily: "Roboto Slab" }}
+              >
+                {loadingSuggestions ? (
+                  <p className="px-4 py-3 text-sm text-slate-500">
+                    Searching genes...
+                  </p>
+                ) : suggestions.length > 0 ? (
+                  suggestions.map((gene, index) => (
+                    <button
+                      key={gene.id || index}
+                      type="button"
+                      onClick={() => handleSelect(gene)}
+                      className="block w-full border-b border-slate-100 px-4 py-3 text-left text-slate-800 transition-colors last:border-b-0 hover:bg-emerald-50"
+                      style={{ fontFamily: "Roboto Slab" }}
+                    >
+                      <span className="block truncate text-sm font-medium">
+                       {gene.symbol || "Unnamed gene"}
+                      </span>
+
+                      <span className="mt-1 block truncate text-xs text-slate-500">
+                        {gene.gene_name || "Name unavailable"}
+                        {gene.gene_type ? ` · ${gene.gene_type}` : ""}
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <p className="px-4 py-3 text-sm text-slate-500">
+                    No matching genes found.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2">
@@ -88,7 +211,6 @@ export default function GeneSearch({ onSearch, onClear }: GeneSearchProps) {
             </button>
 
             <div className="relative flex flex-1 sm:flex-none">
-              {/* One-time ring when the search becomes ready */}
               <AnimatePresence>
                 {hasText && !reduceMotion && (
                   <motion.span

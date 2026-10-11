@@ -56,7 +56,11 @@ export default function Genes() {
 
       {/* Search Section */}
       <div className="mb-6">
-        <GeneSearch onSearch={searchGenes} onClear={clearSearch} />
+        <GeneSearch
+  onSearch={searchGenes}
+  onClear={clearSearch}
+  onSelect={selectGene}
+/>
       </div>
 
       {/* Loading State */}

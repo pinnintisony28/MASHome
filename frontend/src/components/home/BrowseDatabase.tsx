@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { motion ,type Variants } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import {
   Crosshair,
   Pill,
@@ -19,6 +19,9 @@ import {
   Atom,
   Beaker,
   ChevronRight,
+  FileText,
+  GitBranch,
+  Stethoscope,
 } from "lucide-react";
 
 const modules = [
@@ -100,13 +103,65 @@ const modules = [
     stat: "876 trials",
     pageBg: "from-violet-50/30 to-indigo-50/30",
   },
+  {
+    title: "Patents",
+    description:
+      "Browse patent filings and intellectual property related to MASLD therapeutics.",
+    icon: FileText,
+    secondaryIcon: Beaker,
+    color: "from-sky-500 to-cyan-500",
+    iconColor: "#0EA5E9",
+    bgColor: "from-sky-50 to-cyan-50",
+    path: "/patents",
+    stat: "1,562 patents",
+    pageBg: "from-sky-50/30 to-cyan-50/30",
+  },
+  {
+    title: "Pathways",
+    description:
+      "Explore biological pathways and signaling cascades involved in disease progression.",
+    icon: GitBranch,
+    secondaryIcon: Network,
+    color: "from-lime-500 to-green-500",
+    iconColor: "#84CC16",
+    bgColor: "from-lime-50 to-green-50",
+    path: "/pathways",
+    stat: "942 pathways",
+    pageBg: "from-lime-50/30 to-green-50/30",
+  },
+  {
+    title: "Associated Diseases",
+    description:
+      "Discover diseases and comorbidities associated with MASLD and related conditions.",
+    icon: Stethoscope,
+    secondaryIcon: HeartPulse,
+    color: "from-fuchsia-500 to-purple-500",
+    iconColor: "#D946EF",
+    bgColor: "from-fuchsia-50 to-purple-50",
+    path: "/associated-diseases",
+    stat: "634 diseases",
+    pageBg: "from-fuchsia-50/30 to-purple-50/30",
+  },
+  {
+    title: "Medical Devices",
+    description:
+      "Access medical devices and digital health tools for MASLD monitoring and management.",
+    icon: HeartPulse,
+    secondaryIcon: Activity,
+    color: "from-orange-500 to-red-500",
+    iconColor: "#F97316",
+    bgColor: "from-orange-50 to-red-50",
+    path: "/medical-devices",
+    stat: "128 devices",
+    pageBg: "from-orange-50/30 to-red-50/30",
+  },
 ];
 
 export default function BrowseDatabaseAlt() {
   const navigate = useNavigate();
 
   // Animation Variants
-  const containerVariants :Variants= {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -117,7 +172,7 @@ export default function BrowseDatabaseAlt() {
     },
   };
 
-  const headerVariants:Variants = {
+  const headerVariants: Variants = {
     hidden: { opacity: 0, y: -15 },
     visible: {
       opacity: 1,
@@ -129,7 +184,7 @@ export default function BrowseDatabaseAlt() {
     },
   };
 
-  const itemVariants:Variants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
@@ -141,7 +196,7 @@ export default function BrowseDatabaseAlt() {
     },
   };
 
-  const statsVariants:Variants = {
+  const statsVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
@@ -155,16 +210,19 @@ export default function BrowseDatabaseAlt() {
   };
 
   return (
-    <motion.section 
+    <motion.section
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
       variants={containerVariants}
-      id="browse-database" 
+      id="browse-database"
       className="px-4 py-12 rounded-3xl bg-gradient-to-br from-slate-50/50 via-white to-slate-50/30 border border-slate-200/40"
     >
       {/* Header Section */}
-      <motion.div variants={headerVariants} className="mb-12 flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between">
+      <motion.div
+        variants={headerVariants}
+        className="mb-12 flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between"
+      >
         <div className="max-w-2xl">
           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-slate-100 to-slate-200/50 px-4 py-1.5 border border-slate-200/60 backdrop-blur-sm">
             <Database className="h-3.5 w-3.5 text-slate-600" />
@@ -172,31 +230,34 @@ export default function BrowseDatabaseAlt() {
               Research Modules
             </span>
           </div>
-          
+
           <div className="mb-4">
-  <h2
-    className="text-3xl font-light text-slate-900 relative inline-block"
-    style={{ fontFamily: "Roboto Slab" }}
-  >
-    Browse Database
-    <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
-    <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
-  </h2>
-</div>
-          
-          <p className="mt-2 text-1xl text-slate-600"style={{ fontFamily: "Roboto Slab" }}>
+            <h2
+              className="text-3xl font-light text-slate-900 relative inline-block"
+              style={{ fontFamily: "Roboto Slab" }}
+            >
+              Browse Database
+              <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
+              <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
+            </h2>
+          </div>
+
+          <p
+            className="mt-2 text-1xl text-slate-600"
+            style={{ fontFamily: "Roboto Slab" }}
+          >
             Explore integrated biomedical datasets available in MASHome
           </p>
         </div>
-        
+
         <div className="flex items-center gap-6 text-sm text-slate-400">
           <div className="flex items-center gap-1">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span>6 Modules</span>
+            <span>10 Modules</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="h-2 w-2 rounded-full bg-indigo-500" />
-            <span>32K+ Data</span>
+            <span>35K+ Data</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="h-2 w-2 rounded-full bg-amber-500" />
@@ -206,7 +267,10 @@ export default function BrowseDatabaseAlt() {
       </motion.div>
 
       {/* Modules Grid */}
-      <motion.div variants={containerVariants} className="grid gap-8 md:grid-cols-2">
+      <motion.div
+        variants={containerVariants}
+        className="grid gap-8 md:grid-cols-2"
+      >
         {modules.map((module) => {
           const Icon = module.icon;
           const SecondaryIcon = module.secondaryIcon;
@@ -219,12 +283,22 @@ export default function BrowseDatabaseAlt() {
               onClick={() => navigate(module.path)}
               className="group relative cursor-pointer overflow-hidden rounded-2xl border border-slate-200/60 bg-white p-0 shadow-sm transition-all duration-500 hover:border-slate-300 hover:shadow-xl"
             >
-              <div className="flex flex-col md:flex-row" style={{ fontFamily: "Roboto Slab" }}>
+              <div
+                className="flex flex-col md:flex-row"
+                style={{ fontFamily: "Roboto Slab" }}
+              >
                 {/* Left Side - Icon Section */}
-                <div className={`relative flex min-h-[180px] w-full items-center justify-center bg-gradient-to-br ${module.bgColor} p-8 md:w-1/3`}>
-                  <div className={`absolute inset-0 bg-gradient-to-br ${module.pageBg} opacity-100 transition-opacity duration-500 group-hover:opacity-30`} />
-                  
-                  <div className="relative z-10 flex flex-col items-center gap-3" style={{ fontFamily: "Roboto Slab" }}>
+                <div
+                  className={`relative flex min-h-[180px] w-full items-center justify-center bg-gradient-to-br ${module.bgColor} p-8 md:w-1/3`}
+                >
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${module.pageBg} opacity-100 transition-opacity duration-500 group-hover:opacity-30`}
+                  />
+
+                  <div
+                    className="relative z-10 flex flex-col items-center gap-3"
+                    style={{ fontFamily: "Roboto Slab" }}
+                  >
                     <div className="rounded-2xl bg-white/80 p-4 shadow-md backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg">
                       <Icon
                         size={28}
@@ -233,10 +307,12 @@ export default function BrowseDatabaseAlt() {
                       />
                     </div>
                     <div className="text-center">
-                      <span className="text-xs font-medium text-slate-500">{module.stat}</span>
+                      <span className="text-xs font-medium text-slate-500">
+                        {module.stat}
+                      </span>
                     </div>
                   </div>
-                  
+
                   {/* Decorative Pattern */}
                   <div className="absolute bottom-0 right-0 opacity-10 group-hover:opacity-5 transition-opacity duration-500">
                     <SecondaryIcon size={100} strokeWidth={0.5} />
@@ -253,10 +329,10 @@ export default function BrowseDatabaseAlt() {
                       {module.title}
                     </h3>
                     <ChevronRight
-  size={20}
-  style={{ color: module.iconColor }}
-  className="transition-transform duration-300 group-hover:translate-x-1"
-/>
+                      size={20}
+                      style={{ color: module.iconColor }}
+                      className="transition-transform duration-300 group-hover:translate-x-1"
+                    />
                   </div>
 
                   <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -265,13 +341,16 @@ export default function BrowseDatabaseAlt() {
 
                   <div className="mt-4 flex items-center gap-4">
                     <div className="flex items-center gap-2 text-xs text-slate-400">
-<SecondaryIcon
-  size={12}
-  style={{ color: module.iconColor }}
-/>                      <span>{module.stat}</span>
+                      <SecondaryIcon
+                        size={12}
+                        style={{ color: module.iconColor }}
+                      />
+                      <span>{module.stat}</span>
                     </div>
                     <div className="h-4 w-px bg-slate-200" />
-                    <span className={`text-xs font-medium bg-gradient-to-r ${module.color} bg-clip-text text-transparent`}>
+                    <span
+                      className={`text-xs font-medium bg-gradient-to-r ${module.color} bg-clip-text text-transparent`}
+                    >
                       Explore →
                     </span>
                   </div>
@@ -293,23 +372,24 @@ export default function BrowseDatabaseAlt() {
       </motion.div>
 
       {/* Quick Access Bar */}
-      <motion.div 
+      <motion.div
         variants={statsVariants}
         className="mt-8 flex flex-wrap items-center justify-center gap-3"
       >
-        <span className="text-sm font-medium text-slate-500 mr-2">Quick Access:</span>
+        <span className="text-sm font-medium text-slate-500 mr-2">
+          Quick Access:
+        </span>
         {modules.map((module) => {
           const SecondaryIcon = module.secondaryIcon;
           return (
             <button
               key={module.title}
               onClick={() => navigate(module.path)}
-              className={`group flex items-center gap-2 rounded-full border border-slate-200/60 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-md hover:border-${module.color.split(' ')[0].replace('from-', '')}`}
+              className={`group flex items-center gap-2 rounded-full border border-slate-200/60 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-all duration-300 hover:scale-105 hover:shadow-md hover:border-${module.color
+                .split(" ")[0]
+                .replace("from-", "")}`}
             >
-             <SecondaryIcon
-  size={14}
-  style={{ color: module.iconColor }}
-/>
+              <SecondaryIcon size={14} style={{ color: module.iconColor }} />
               <span>{module.title}</span>
             </button>
           );

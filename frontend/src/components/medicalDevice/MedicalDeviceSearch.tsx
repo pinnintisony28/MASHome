@@ -1,5 +1,8 @@
 import { Search, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import MedicalDeviceService from "../../services/medicalDeviceService";
+import type { MedicalDevice } from "../../types/medicalDevice";
 
 type Props = {
   onSearch: (keyword: string) => void;
@@ -11,44 +14,163 @@ export default function MedicalDeviceSearch({
   onClear,
 }: Props) {
   const [keyword, setKeyword] = useState("");
+  const [suggestions, setSuggestions] = useState<MedicalDevice[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const value = keyword.trim();
+
+    if (!value) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      setSuggestionsLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const timer = window.setTimeout(async () => {
+      try {
+        setSuggestionsLoading(true);
+
+        const results = await MedicalDeviceService.search(value);
+
+        if (!cancelled) {
+          setSuggestions(results.slice(0, 50));
+          setShowSuggestions(true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error("Failed to load medical device suggestions:", error);
+          setSuggestions([]);
+          setShowSuggestions(false);
+        }
+      } finally {
+        if (!cancelled) {
+          setSuggestionsLoading(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [keyword]);
+
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
-    onSearch(keyword);
+    setShowSuggestions(false);
+    onSearch(keyword.trim());
   }
 
   function handleClear() {
     setKeyword("");
+    setSuggestions([]);
+    setShowSuggestions(false);
     onClear();
+  }
+
+  function handleSelect(device: MedicalDevice) {
+    setKeyword(device.device_test || "");
+    setShowSuggestions(false);
+    onSearch(device.device_test || "");
   }
 
   return (
     <form
       onSubmit={handleSubmit}
       className="w-full"
+      style={{ fontFamily: "Roboto Slab" }}
     >
       <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
         <Search
           size={20}
-          className="ml-3 text-slate-400"
+          className="ml-3 shrink-0 text-slate-400"
         />
 
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) =>
-            setKeyword(e.target.value)
-          }
-          placeholder="Search medical devices by name, manufacturer, type, country or use..."
-          className="flex-1 bg-transparent px-2 py-3 text-sm text-slate-700 outline-none placeholder:text-slate-400"
-        />
+        <div ref={wrapperRef} className="relative min-w-0 flex-1">
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onFocus={() => {
+              if (keyword.trim()) setShowSuggestions(true);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setShowSuggestions(false);
+            }}
+            placeholder="Search medical devices by name, manufacturer, type, country or use..."
+            autoComplete="off"
+            className="w-full bg-transparent px-2 py-3 text-sm font-normal text-slate-700 outline-none placeholder:text-slate-400"
+          />
+
+          {showSuggestions && keyword.trim() && (
+            <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-72 overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg">
+              {suggestionsLoading ? (
+                <p className="px-3 py-3 text-sm font-normal text-slate-500">
+                  Loading suggestions...
+                </p>
+              ) : suggestions.length > 0 ? (
+                suggestions.map((device) => (
+                  <button
+                    key={device.id}
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleSelect(device)}
+                    className="block w-full border-b border-slate-100 px-3 py-3 text-left transition-colors last:border-b-0 hover:bg-emerald-50"
+                  >
+                    <p className="text-sm font-normal text-slate-800">
+                      {device.device_test || "Unnamed device"}
+                    </p>
+
+                    {device.manufacturer && (
+                      <p className="mt-1 text-xs font-normal text-slate-500">
+                        Manufacturer: {device.manufacturer}
+                      </p>
+                    )}
+
+                    <p className="mt-1 text-xs font-normal text-slate-500">
+                      {[device.device_type, device.country_region]
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
+                  </button>
+                ))
+              ) : (
+                <p className="px-3 py-3 text-sm font-normal text-slate-500">
+                  No matching medical devices found.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
 
         {keyword && (
           <button
             type="button"
             onClick={handleClear}
-            className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+            className="shrink-0 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
             aria-label="Clear search"
           >
             <X size={18} />
@@ -57,7 +179,7 @@ export default function MedicalDeviceSearch({
 
         <button
           type="submit"
-          className="rounded-lg bg-emerald-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-emerald-700"
+          className="shrink-0 rounded-lg bg-emerald-600 px-5 py-3 text-sm font-normal text-white transition hover:bg-emerald-700"
         >
           Search
         </button>

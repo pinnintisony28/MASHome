@@ -12,7 +12,10 @@ export default function MedicalDeviceTable({
   const navigate = useNavigate();
 
   return (
-    <div className="h-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div
+  className="h-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
+  style={{ fontFamily: "Roboto Slab" }}
+>
       <div className="h-full overflow-auto">
         <table className="w-full min-w-[1500px] border-collapse text-sm">
           <thead className="sticky top-0 z-10 bg-slate-100">

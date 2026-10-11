@@ -142,126 +142,57 @@ export default function Biomarkers() {
   if (selectedBiomarker) {
     return (
       <motion.div
-        initial={{
-          opacity: 0,
-          x: 15,
-        }}
-        animate={{
-          opacity: 1,
-          x: 0,
-        }}
-        transition={{
-          duration: 0.3,
-        }}
-        className="min-h-screen bg-slate-50"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="max-w-7xl mx-auto px-4 py-8"
       >
-        {/* =================================================
-            HEADER
-        ================================================== */}
+        {/* Header */}
+        <div className="mb-6">
+          <h1
+            className="text-3xl font-light text-slate-900 relative inline-block"
+            style={{ fontFamily: "Roboto Slab" }}
+          >
+            Biomarkers
+            <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
+            <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
+          </h1>
+        </div>
 
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-7xl px-6 py-6">
+        <div className="mt-8 space-y-4">
+          {/* Back button */}
+          <button
+            type="button"
+            onClick={handleBackToResults}
+            className="group flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors"
+            style={{ fontFamily: "Roboto Slab" }}
+          >
+            <ArrowLeft
+              size={16}
+              className="transition-transform duration-200 group-hover:-translate-x-1"
+            />
+            <span>Back to table</span>
+          </button>
 
-            <button
-              type="button"
-              onClick={handleBackToResults}
-              className="
-                group
-                mb-5
-                inline-flex
-                items-center
-                gap-2
-                rounded-lg
-                px-3
-                py-2
-                text-sm
-                font-medium
-                text-slate-600
-                transition-all
-                hover:bg-teal-50
-                hover:text-teal-700
-              "
-            >
-              <ArrowLeft
-                size={17}
-                className="transition-transform group-hover:-translate-x-1"
-              />
-
-              <span>
-                Back to{" "}
-                {activeCategory === "all"
-                  ? "Biomarkers"
-                  : activeCategory ===
-                    "Blood & Serum Biomarkers"
-                  ? "Blood & Serum"
-                  : activeCategory ===
-                    "Imaging-Based Biomarkers"
-                  ? "Imaging-Based"
-                  : "Overall"}
-              </span>
-            </button>
-
-            <div className="flex items-start gap-4">
-
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-sm">
-                <Activity size={23} />
-              </div>
-
-              <div>
-
-                <h1
-                  className="text-2xl font-bold text-slate-900"
-                  style={{
-                    fontFamily: "Roboto Slab",
-                  }}
-                >
-                  Biomarker Details
-                </h1>
-
-                <p className="mt-1 text-sm text-slate-500">
-                  Detailed information about the
-                  selected biomarker.
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-        </section>
-
-        {/* =================================================
-            DETAILS CONTENT
-        ================================================== */}
-
-        <main className="mx-auto max-w-5xl px-6 py-8">
-
+          {/* Details */}
           {detailsLoading ? (
-            <div className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-24 shadow-sm">
-
+            <div className="flex items-center justify-center rounded-xl border border-slate-200/60 bg-white py-20 shadow-sm">
               <div className="flex flex-col items-center gap-4">
-
-                <div className="h-11 w-11 animate-spin rounded-full border-4 border-teal-100 border-t-teal-600" />
-
-                <p className="text-sm text-slate-500">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
+                <p
+                  className="text-sm text-slate-500"
+                  style={{ fontFamily: "Roboto Slab" }}
+                >
                   Loading biomarker details...
                 </p>
-
               </div>
-
             </div>
           ) : (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-
-              <BiomarkerDetails
-                biomarker={selectedBiomarker}
-              />
-
+            <div className="rounded-xl border border-slate-200/60 bg-white p-5 shadow-sm md:p-6">
+              <BiomarkerDetails biomarker={selectedBiomarker} />
             </div>
           )}
-
-        </main>
-
+        </div>
       </motion.div>
     );
   }
@@ -273,48 +204,46 @@ export default function Biomarkers() {
    */
 
   return (
-    <motion.div
+        <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen bg-slate-50"
+      className="min-h-screen"
     >
       {/* =====================================================
           HEADER
       ====================================================== */}
 
-      <section className="border-b border-slate-200 bg-white">
+      <section className="border-b border-slate-200">
         <div className="mx-auto max-w-7xl px-6 py-8">
 
           <div className="flex items-start justify-between gap-6">
 
             <div className="flex items-start gap-4">
 
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-sm">
+              {/* <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-sm">
                 <Activity size={23} />
-              </div>
+              </div> */}
 
-              <div>
-
-                <h1
-                  className="text-2xl font-bold text-slate-900"
-                  style={{
-                    fontFamily: "Roboto Slab",
-                  }}
-                >
-                  Biomarkers
-                </h1>
-
-                <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">
-                  Explore disease biomarkers associated
-                  with MASLD, including blood, serum,
-                  imaging-based, and overall biomarker
-                  information.
-                </p>
-
-              </div>
-
-            </div>
+                    {/* Header */}
+      <div className="mx-auto max-w-7xl px-6 pt-8">
+        <h1
+          className="text-3xl font-light text-slate-900 relative inline-block"
+          style={{ fontFamily: "Roboto Slab" }}
+        >
+          Biomarkers
+          <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
+          <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
+        </h1>
+        <p
+          className="mt-4 max-w-2xl text-sm text-slate-500"
+          style={{ fontFamily: "Roboto Slab" }}
+        >
+          Explore disease biomarkers associated with MASLD, including blood,
+          serum, imaging-based, and overall biomarker information.
+        </p>
+      </div>
+      </div>
 
             <div className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 sm:flex">
 
@@ -376,17 +305,20 @@ export default function Biomarkers() {
 
           </div>
 
-          <BiomarkerSearch
-            onSearch={(keyword) => {
-              setActiveCategory("all");
-              searchBiomarkers(keyword);
-            }}
-            onClear={() => {
-              setActiveCategory("all");
-              clearSearch();
-              clearSelection();
-            }}
-          />
+         <BiomarkerSearch
+  onSearch={(keyword) => {
+    setActiveCategory("all");
+    searchBiomarkers(keyword);
+  }}
+  onClear={() => {
+    setActiveCategory("all");
+    clearSearch();
+    clearSelection();
+  }}
+  onSelect={(biomarker) => {
+    selectBiomarker(biomarker.id);
+  }}
+/>
 
         </div>
 
