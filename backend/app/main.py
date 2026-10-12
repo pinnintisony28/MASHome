@@ -45,12 +45,18 @@ from app.models.pathway import Pathway
 from app.routers.pathways import router as pathways_router
 from fastapi.staticfiles import StaticFiles
 from app.routers import publications
+from pathlib import Path
 app = FastAPI()
-app.mount(
-    "/pathway-images",
-    StaticFiles(directory="../pathway-images"),
-    name="pathway-images"
-)
+name="pathway-images"
+BASE_DIR = Path(__file__).resolve().parent
+PATHWAY_IMAGES_DIR = BASE_DIR.parent.parent / "pathway-images"
+
+if PATHWAY_IMAGES_DIR.exists():
+    app.mount(
+        "/pathway-images",
+        StaticFiles(directory=str(PATHWAY_IMAGES_DIR)),
+        name="pathway-images"
+    )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
