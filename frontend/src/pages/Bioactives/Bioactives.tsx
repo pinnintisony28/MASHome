@@ -32,20 +32,15 @@ export default function Bioactives() {
       <div className="mb-6">
         <div className="flex items-start justify-between">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="rounded-lg bg-gradient-to-br from-emerald-00 to-teal-000 p-2 shadow-lg shadow-emerald-500/20">
-                {/* <Leaf size={20} className="text-white" /> */}
-              </div>
-              <h1
-                className="text-3xl font-light text-slate-900 relative inline-block"
-                style={{ fontFamily: "Roboto Slab" }}
-              >
-                Bioactives
-                <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
-                <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
-              </h1>
-            </div>
-            <p className="mt-3 text-sm text-slate-500 pl-11" style={{ fontFamily: "Roboto Slab" }}>
+            <h1
+              className="text-3xl font-light text-slate-900 relative inline-block"
+              style={{ fontFamily: "Roboto Slab" }}
+            >
+              Bioactives
+              <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
+              <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
+            </h1>
+            <p className="mt-4 text-sm text-slate-500" style={{ fontFamily: "Roboto Slab" }}>
               Explore medicinal plants, phytochemicals, natural compounds and their bioactive groups involved in biomedical research.
             </p>
           </div>
@@ -58,13 +53,13 @@ export default function Bioactives() {
 
       {/* Search Section */}
       <div className="mb-6">
-      <BioactiveSearch
-  onSearch={searchBioactives}
-  onClear={clearSearch}
-  onSelect={(bioactive) => {
-    selectBioactive(bioactive.bioactive_id);
-  }}
-/>
+        <BioactiveSearch
+          onSearch={searchBioactives}
+          onClear={clearSearch}
+          onSelect={(bioactive) => {
+            selectBioactive(bioactive.bioactive_id);
+          }}
+        />
       </div>
 
       {/* Loading State */}
@@ -141,23 +136,21 @@ export default function Bioactives() {
             )}
           </div>
 
-          {/* Grid Layout */}
+          {/* Full-width table */}
           <div className="w-full">
-            {/* Left Column - Bioactive Table */}
-   <div>        
-  <BioactiveTable
-    bioactives={bioactives}
-    selectedId={selectedBioactive?.bioactive_id}
-    onSelect={selectBioactive}
-  />
-</div>
-            {/* Right Column - Bioactive Details */}
-            {/* <div className="h-[calc(100vh-400px)] min-h-[400px]">
-             <BioactiveDetails
-  bioactive={selectedBioactive}
-  profile={profile}
-  relatedBioactives={relatedBioactives}
-/>
+            <BioactiveTable
+              bioactives={bioactives}
+              selectedId={selectedBioactive?.bioactive_id}
+              onSelect={selectBioactive}
+            />
+
+            {/* Details now live on the separate BioactiveDetailsPage
+            <div className="h-[calc(100vh-400px)] min-h-[400px]">
+              <BioactiveDetails
+                bioactive={selectedBioactive}
+                profile={profile}
+                relatedBioactives={relatedBioactives}
+              />
             </div> */}
           </div>
         </motion.div>

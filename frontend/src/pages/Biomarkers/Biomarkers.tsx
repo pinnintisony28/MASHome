@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   AlertCircle,
@@ -40,6 +40,13 @@ export default function Biomarkers() {
 
   const [activeCategory, setActiveCategory] =
     useState<CategoryKey>("all");
+
+  const showDetails = !!selectedBiomarker;
+
+  // Start at the top whenever we switch between table and details
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [showDetails]);
 
   /*
    * ---------------------------------------------------------
@@ -204,67 +211,48 @@ export default function Biomarkers() {
    */
 
   return (
-        <motion.div
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen"
+      className="max-w-7xl mx-auto px-4 py-8"
     >
       {/* =====================================================
           HEADER
       ====================================================== */}
 
-      <section className="border-b border-slate-200">
-        <div className="mx-auto max-w-7xl px-6 py-8">
-
-          <div className="flex items-start justify-between gap-6">
-
-            <div className="flex items-start gap-4">
-
-              {/* <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-600 to-emerald-600 text-white shadow-sm">
-                <Activity size={23} />
-              </div> */}
-
-                    {/* Header */}
-      <div className="mx-auto max-w-7xl px-6 pt-8">
-        <h1
-          className="text-3xl font-light text-slate-900 relative inline-block"
-          style={{ fontFamily: "Roboto Slab" }}
-        >
-          Biomarkers
-          <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
-          <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
-        </h1>
-        <p
-          className="mt-4 max-w-2xl text-sm text-slate-500"
-          style={{ fontFamily: "Roboto Slab" }}
-        >
-          Explore disease biomarkers associated with MASLD, including blood,
-          serum, imaging-based, and overall biomarker information.
-        </p>
-      </div>
-      </div>
-
-            <div className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1.5 sm:flex">
-
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-
-              <span className="text-xs font-medium text-emerald-700">
-                Database
-              </span>
-
-            </div>
-
+      <div className="mb-6">
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <h1
+              className="text-3xl font-light text-slate-900 relative inline-block"
+              style={{ fontFamily: "Roboto Slab" }}
+            >
+              Biomarkers
+              <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-emerald-500 rounded-full" />
+              <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
+            </h1>
+            <p
+              className="mt-4 max-w-2xl text-sm text-slate-500"
+              style={{ fontFamily: "Roboto Slab" }}
+            >
+              Explore disease biomarkers associated with MASLD, including blood,
+              serum, imaging-based, and overall biomarker information.
+            </p>
           </div>
 
+          <div className="mt-1 hidden items-center gap-2 sm:flex">
+            <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs text-slate-400">Database</span>
+          </div>
         </div>
-      </section>
+      </div>
 
       {/* =====================================================
           MAIN
       ====================================================== */}
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main>
 
         {/* ERROR */}
 
@@ -305,20 +293,20 @@ export default function Biomarkers() {
 
           </div>
 
-         <BiomarkerSearch
-  onSearch={(keyword) => {
-    setActiveCategory("all");
-    searchBiomarkers(keyword);
-  }}
-  onClear={() => {
-    setActiveCategory("all");
-    clearSearch();
-    clearSelection();
-  }}
-  onSelect={(biomarker) => {
-    selectBiomarker(biomarker.id);
-  }}
-/>
+          <BiomarkerSearch
+            onSearch={(keyword) => {
+              setActiveCategory("all");
+              searchBiomarkers(keyword);
+            }}
+            onClear={() => {
+              setActiveCategory("all");
+              clearSearch();
+              clearSelection();
+            }}
+            onSelect={(biomarker) => {
+              selectBiomarker(biomarker.id);
+            }}
+          />
 
         </div>
 

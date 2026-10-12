@@ -1,10 +1,11 @@
+import { useEffect } from "react";
 import useGenes from "../../hooks/useGenes";
 import GeneSearch from "../../components/gene/GeneSearch";
 import GeneTable from "../../components/gene/GeneTable";
 import GeneDetails from "../../components/gene/GeneDetails";
 import GeneWelcome from "../../components/gene/GeneWelcome";
 import { motion } from "framer-motion";
-import { Dna, Sparkles } from "lucide-react";
+import { ArrowLeft, Dna, Sparkles } from "lucide-react";
 
 export default function Genes() {
  const {
@@ -18,6 +19,13 @@ export default function Genes() {
   clearSelection,
   clearSearch,
 } = useGenes();
+
+  const showDetails = !!selectedGene;
+
+  // Start at the top whenever we switch between table and details
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [showDetails]);
 
   return (
     <motion.div 
@@ -43,9 +51,11 @@ export default function Genes() {
                 <span className="absolute -bottom-2 left-14 w-2 h-0.5 bg-emerald-300 rounded-full" />
               </h1>
             </div>
-            <p className="mt-3 text-sm text-slate-500 pl-11" style={{ fontFamily: "Roboto Slab" }}>
-              Explore genes, biological properties, therapeutic relevance and molecular characteristics.
-            </p>
+            {!showDetails && (
+              <p className="mt-3 text-sm text-slate-500 pl-11" style={{ fontFamily: "Roboto Slab" }}>
+                Explore genes, biological properties, therapeutic relevance and molecular characteristics.
+              </p>
+            )}
           </div>
           <div className="flex items-center gap-2 mt-1">
             <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -54,14 +64,16 @@ export default function Genes() {
         </div>
       </div>
 
-      {/* Search Section */}
-      <div className="mb-6">
-        <GeneSearch
-  onSearch={searchGenes}
-  onClear={clearSearch}
-  onSelect={selectGene}
-/>
-      </div>
+      {/* Search Section (hidden on the details page) */}
+      {!showDetails && (
+        <div className="mb-6">
+          <GeneSearch
+            onSearch={searchGenes}
+            onClear={clearSearch}
+            onSelect={selectGene}
+          />
+        </div>
+      )}
 
       {/* Loading State */}
       {loading && (
@@ -104,56 +116,63 @@ export default function Genes() {
         </motion.div>
       )}
 
-      {/* Results Section */}
+      {/* Results / Details: one view at a time */}
       {!loading && !error && hasSearched && (
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mt-8"
-        >
-          {/* Results Header */}
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-slate-700" style={{ fontFamily: "Roboto Slab" }}>
-                  {genes.length} gene{genes.length !== 1 ? "s" : ""} found
-                </span>
-                <span className="text-xs text-slate-400">•</span>
-                <span className="text-xs text-slate-400 flex items-center gap-1">
-                  <Sparkles size={10} className="text-emerald-400" />
-                  Ready to explore
-                </span>
-              </div>
-            </div>
-            {selectedGene && (
+        <>
+          {showDetails ? (
+            /* ---------- Details "page" ---------- */
+            <motion.div
+              key="details"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mt-8 space-y-4"
+            >
               <button
                 onClick={clearSelection}
-                className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors hover:underline"
+                className="group flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors"
                 style={{ fontFamily: "Roboto Slab" }}
               >
-                Clear selection
+                <ArrowLeft
+                  size={16}
+                  className="transition-transform duration-200 group-hover:-translate-x-1"
+                />
+                <span>Back to table</span>
               </button>
-            )}
-          </div>
 
-          {/* Grid Layout */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Left Column - Gene Table */}
-            <div className="h-[calc(100vh-400px)] min-h-[400px]">
-              <GeneTable
-                genes={genes}
-                selectedSymbol={selectedGene?.symbol}
-                onSelect={selectGene}
-              />
-            </div>
-
-            {/* Right Column - Gene Details */}
-            <div className="h-[calc(100vh-400px)] min-h-[400px]">
               <GeneDetails gene={selectedGene} />
-            </div>
-          </div>
-        </motion.div>
+            </motion.div>
+          ) : (
+            /* ---------- Table view ---------- */
+            <motion.div
+              key="table"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mt-8"
+            >
+              {/* Results Header */}
+              <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-slate-700" style={{ fontFamily: "Roboto Slab" }}>
+                      {genes.length} gene{genes.length !== 1 ? "s" : ""} found
+                    </span>
+                    <span className="text-xs text-slate-400">•</span>
+                    <span className="text-xs text-slate-400 flex items-center gap-1">
+                      <Sparkles size={10} className="text-emerald-400" />
+                      Ready to explore
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="h-[calc(100vh-400px)] min-h-[400px]">
+                <GeneTable genes={genes} onSelect={selectGene} />
+              </div>
+            </motion.div>
+          )}
+        </>
       )}
     </motion.div>
   );
