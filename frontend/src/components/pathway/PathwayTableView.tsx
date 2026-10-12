@@ -138,9 +138,12 @@ export default function PathwayTableView({
 
           </div>
 
-          {/* Horizontal scrolling */}
+          {/* Horizontal scrolling.
+              Mobile keeps the fixed-height scroll box.
+              Desktop (lg+) has no inner vertical scrollbar:
+              the page scrolls instead. */}
 
-          <div className="max-h-[620px] overflow-auto">
+          <div className="max-h-[620px] overflow-auto lg:max-h-none">
 
             <table className="min-w-full border-collapse">
 
