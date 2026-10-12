@@ -57,10 +57,15 @@ if PATHWAY_IMAGES_DIR.exists():
         StaticFiles(directory=str(PATHWAY_IMAGES_DIR)),
         name="pathway-images"
     )
+from fastapi.middleware.cors import CORSMiddleware
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[
+        "https://www.themashome.com",
+        "https://themashome.com",
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
