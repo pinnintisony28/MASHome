@@ -1,7 +1,5 @@
 
-import axios from "axios";
-
-const API_BASE_URL = "http://127.0.0.1:8000";
+import api from "./api";
 
 export interface Publication {
   id: string;
@@ -31,8 +29,8 @@ const publicationService = {
     page: number = 1,
     pageSize: number = 10,
   ): Promise<PublicationSearchResponse> {
-    const response = await axios.get<PublicationSearchResponse>(
-      `${API_BASE_URL}/publications/search`,
+    const response = await api.get<PublicationSearchResponse>(
+      "/publications/search",
       {
         params: {
           query,

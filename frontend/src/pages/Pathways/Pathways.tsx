@@ -564,7 +564,7 @@ export default function Pathways() {
                     {selectedPathway.image_url && (
   <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
     <img
-      src={`http://127.0.0.1:8000${selectedPathway.image_url}`}
+      src={`https://backend-production-31fe.up.railway.app${selectedPathway.image_url}`}
       alt={`${selectedPathway.pathway_name} pathway`}
       className="mx-auto max-h-[700px] w-full object-contain"
     />
