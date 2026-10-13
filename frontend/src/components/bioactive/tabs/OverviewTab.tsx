@@ -1,3 +1,4 @@
+
 import type { BioactiveProfile } from "../../../services/bioactiveProfileService";
 import {
   FlaskConical,
@@ -14,46 +15,42 @@ export default function OverviewTab({ profile }: Props) {
   const bioactive = profile.overview;
 
   return (
-    <div className="space-y-6">
-
+    <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">
+        <h2 className="text-lg font-bold text-slate-800">
           Overview
         </h2>
 
-        <p className="text-slate-500 mt-1">
+        <p className="mt-1 text-xs text-slate-500">
           General information about this bioactive molecule.
         </p>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2">
-
+      <div className="grid gap-3 md:grid-cols-2">
         <InfoCard
-          icon={<Fingerprint size={20} />}
+          icon={<Fingerprint size={16} />}
           title="Bioactive Name"
           value={bioactive.bioactive_name}
         />
 
         <InfoCard
-          icon={<FlaskConical size={20} />}
+          icon={<FlaskConical size={16} />}
           title="Molecular Formula"
           value={bioactive.molecular_formula}
         />
 
         <InfoCard
-          icon={<Weight size={20} />}
+          icon={<Weight size={16} />}
           title="Molecular Weight"
           value={bioactive.molecular_weight}
         />
 
         <InfoCard
-          icon={<Dna size={20} />}
+          icon={<Dna size={16} />}
           title="SMILES"
           value={bioactive.smiles}
         />
-
       </div>
-
     </div>
   );
 }
@@ -64,30 +61,22 @@ type CardProps = {
   icon: React.ReactNode;
 };
 
-function InfoCard({
-  title,
-  value,
-  icon,
-}: CardProps) {
+function InfoCard({ title, value, icon }: CardProps) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-
-      <div className="flex items-center gap-3 mb-4">
-
-        <div className="rounded-lg bg-emerald-100 p-2 text-emerald-700">
+    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+      <div className="mb-3 flex items-center gap-2">
+        <div className="rounded-lg bg-emerald-100 p-1.5 text-emerald-700">
           {icon}
         </div>
 
-        <h3 className="font-semibold text-slate-600">
+        <h3 className="text-xs font-semibold text-slate-600">
           {title}
         </h3>
-
       </div>
 
-      <p className="break-words text-lg font-bold text-slate-800">
+      <p className="break-words text-sm font-bold text-slate-800">
         {value || "N/A"}
       </p>
-
     </div>
   );
 }

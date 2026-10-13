@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import { FaLinkedin } from "react-icons/fa";
 import { motion, type Variants } from "framer-motion";
-import mamImage from "../assets/mam.jpeg";
 
 type MentorSectionProps = {
   mentorName: string;
@@ -25,7 +24,7 @@ export default function MentorSection({
   institution,
   photo,
 }: MentorSectionProps) {
-  const dummyPhoto = mamImage;
+  const dummyPhoto = "/assets/mam.jpeg";
   const email = "satyavani.ocf@gmail.com";
   const linkedInUrl = "https://www.linkedin.com/in/satyavani-meesala-4305b417b?utm_source=share_via&utm_content=profile&utm_medium=member_android";
 

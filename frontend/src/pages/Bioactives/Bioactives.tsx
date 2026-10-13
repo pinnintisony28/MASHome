@@ -2,7 +2,7 @@ import useBioactives from "../../hooks/useBioactives";
 import BioactiveSearch from "../../components/bioactive/BioactiveSearch";
 import BioactiveTable from "../../components/bioactive/BioactiveTable";
 import BioactiveDetails from "../../components/bioactive/BioactiveDetails";
-import BioactiveWelcome from "../../components/bioactive/BioactiveWelcome";
+
 import { motion } from "framer-motion";
 import { Leaf, Sparkles } from "lucide-react";
 
@@ -27,6 +27,7 @@ export default function Bioactives() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="max-w-7xl mx-auto px-4 py-8"
+      style={{ fontFamily: "'Roboto Slab', serif" }}
     >
       {/* Header Section */}
       <div className="mb-6">
@@ -93,18 +94,10 @@ export default function Bioactives() {
       )}
 
       {/* Welcome State */}
-      {!loading && !error && !hasSearched && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <BioactiveWelcome onQuickSearch={searchBioactives} />
-        </motion.div>
-      )}
+      
 
       {/* Results Section */}
-      {!loading && !error && hasSearched && (
+      {!loading && !error && (
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

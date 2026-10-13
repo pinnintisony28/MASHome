@@ -42,12 +42,17 @@ def clinical_trials_by_status(
 ):
     return get_trials_by_status(db, status)
 
-@router.get("/{trial_id}", response_model=ClinicalTrialResponse)
+
+@router.get("/{trial_id:path}", response_model=ClinicalTrialResponse)
 def get_trial(
     trial_id: str,
     db: Session = Depends(get_db),
 ):
+    print("RECEIVED TRIAL ID:", repr(trial_id))
+
     trial = get_clinical_trial_by_id(db, trial_id)
+
+    print("TRIAL FOUND:", trial is not None)
 
     if not trial:
         raise HTTPException(
@@ -55,4 +60,5 @@ def get_trial(
             detail="Clinical Trial not found",
         )
 
+    print("DATABASE TRIAL ID:", repr(trial.trial_id))
     return trial

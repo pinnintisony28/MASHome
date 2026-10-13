@@ -3,7 +3,7 @@ import useDrugs from "../../hooks/useDrugs";
 import DrugSearch from "../../components/drug/DrugSearch";
 import DrugTable from "../../components/drug/DrugTable";
 import DrugDetails from "../../components/drug/DrugDetails";
-import DrugWelcome from "../../components/drug/DrugWelcome";
+// import DrugWelcome from "../../components/drug/DrugWelcome";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -97,10 +97,7 @@ export default function Drugs() {
         </div>
       )}
 
-      {/* Welcome State */}
-      {!loading && !error && !hasSearched && (
-        <DrugWelcome onQuickSearch={searchDrugs} />
-      )}
+      
 
       {/* Results / Details: one view at a time */}
       {!loading && !error && hasSearched && (

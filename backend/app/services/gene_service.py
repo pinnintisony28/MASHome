@@ -1,10 +1,21 @@
-from sqlalchemy.orm import Session
-from app.models.gene import Gene
+
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import or_
+from app.models.gene import Gene
 
-def get_all_genes(db: Session):
-    return db.query(Gene).all()
+
+def get_all_genes(db: Session, skip: int = 0, limit: int = 25):
+    return (
+        db.query(Gene)
+        .order_by(Gene.id)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_gene_count(db: Session):
+    return db.query(Gene.id).count()
 
 
 def get_gene_by_symbol(db: Session, symbol: str):

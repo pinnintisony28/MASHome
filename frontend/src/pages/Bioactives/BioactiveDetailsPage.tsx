@@ -22,7 +22,7 @@ export default function BioactiveDetailsPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8" style={font}>
+      <div className="mx-auto max-w-7xl px-4 py-8"  style={{ fontFamily: "'Roboto Slab', serif" }}>
         <div className="flex items-center justify-center py-20">
           <div className="flex flex-col items-center gap-4">
             <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
@@ -35,7 +35,7 @@ export default function BioactiveDetailsPage() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8" style={font}>
+      <div className="mx-auto max-w-7xl px-4 py-8"  style={{ fontFamily: "'Roboto Slab', serif" }}>
         <div className="rounded-xl border border-red-200 bg-red-50 px-5 py-4">
           <p className="text-sm text-red-600">{error}</p>
         </div>
@@ -45,7 +45,7 @@ export default function BioactiveDetailsPage() {
 
   if (!profile) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-8" style={font}>
+      <div className="mx-auto max-w-7xl px-4 py-8"  style={{ fontFamily: "'Roboto Slab', serif" }}>
         <div className="rounded-xl border border-slate-200/60 bg-white px-5 py-10 text-center shadow-sm">
           <p className="text-sm text-slate-500">Bioactive not found.</p>
         </div>
@@ -54,7 +54,7 @@ export default function BioactiveDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={font}>
+    <div className="min-h-screen"  style={{ fontFamily: "'Roboto Slab', serif" }}>
       <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
         {/* Header */}
         <div className="mb-6">

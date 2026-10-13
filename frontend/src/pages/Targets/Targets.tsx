@@ -3,9 +3,9 @@ import useTargets from "../../hooks/useTargets";
 import TargetSearch from "../../components/target/TargetSearch";
 import TargetTable from "../../components/target/TargetTable";
 import TargetDetails from "../../components/target/TargetDetails";
-import TargetWelcome from "../../components/target/TargetWelcome";
+
 import RelatedDrugs from "../../components/target/RelatedDrugs";
-import TargetFilter from "../../components/target/TargetFilter";
+
 import { motion } from "framer-motion";
 
 export default function Targets() {
@@ -16,8 +16,7 @@ export default function Targets() {
     loading,
     error,
     hasSearched,
-    selectedType,
-    filterByType,
+    
     searchTargets,
     clearSearch,
     selectTarget,
@@ -65,7 +64,7 @@ export default function Targets() {
       {!showDetails && (
         <div className="space-y-4 mb-6">
           <TargetSearch onSearch={searchTargets} onClear={clearSearch} />
-          <TargetFilter selectedType={selectedType} onSelect={filterByType} />
+          {/* <TargetFilter selectedType={selectedType} onSelect={filterByType} /> */}
         </div>
       )}
 
@@ -97,12 +96,10 @@ export default function Targets() {
       )}
 
       {/* Welcome State */}
-      {!loading && !error && !hasSearched && (
-        <TargetWelcome onQuickSearch={searchTargets} />
-      )}
+      
 
       {/* Results / Details: one view at a time */}
-      {!loading && !error && hasSearched && (
+      {!loading && !error && (
         <>
           {showDetails ? (
             /* ---------- Details "page" ---------- */

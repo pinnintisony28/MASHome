@@ -29,6 +29,23 @@ class ClinicalTrialService {
 
     return response.data;
   }
+  
+async getTerminatedById(trialId: string): Promise<TerminatedTrial> {
+  const response = await api.get(
+    `/terminated-trials/${encodeURIComponent(trialId)}`
+  );
+
+  return response.data;
+}
+
+async getWithdrawnById(trialId: string): Promise<TerminatedTrial> {
+  const response = await api.get(
+    `/terminated-trials/withdrawn/${encodeURIComponent(trialId)}`
+  );
+
+  return response.data;
+}
+
 
   async getById(trialId: string): Promise<ClinicalTrial> {
     const response = await api.get(

@@ -50,3 +50,24 @@ def search_terminated_trials(
         )
         .all()
     )
+
+def get_terminated_trial_by_id(
+    db: Session,
+    trial_id: str,
+):
+    return (
+        db.query(TerminatedTrial)
+        .filter(
+            TerminatedTrial.nct_number == trial_id
+        )
+        .first()
+    )
+def get_withdrawn_trial_by_id(db: Session, trial_id: str):
+    return (
+        db.query(TerminatedTrial)
+        .filter(
+            TerminatedTrial.nct_number == trial_id,
+            TerminatedTrial.study_status.ilike("WITHDRAWN"),
+        )
+        .first()
+    )

@@ -72,7 +72,7 @@ export default function BiomarkerWelcome({
             className="text-2xl font-bold text-slate-800"
             style={{ fontFamily: "Roboto Slab" }}
           >
-            Explore Disease Biomarkers
+            Explore Disease Biomarkers hello sony
           </h2>
           
           <div className="flex items-center justify-center gap-2 mt-1">

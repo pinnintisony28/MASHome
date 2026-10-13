@@ -1,36 +1,71 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import GeneService from "../services/geneService";
 import type { Gene, GeneDetails } from "../types/gene";
 
 export default function useGenes() {
   const [genes, setGenes] = useState<Gene[]>([]);
-  const [selectedGene, setSelectedGene] =
-    useState<GeneDetails | null>(null);
+  const [selectedGene, setSelectedGene] = useState<GeneDetails | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(true);
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalGenes, setTotalGenes] = useState(0);
+
+  useEffect(() => {
+    void loadGenes(1);
+  }, []);
+
+  async function loadGenes(pageNumber = 1) {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await GeneService.getAll(pageNumber, 25);
+
+      setGenes(response.items);
+      setPage(response.page);
+      setTotalPages(response.total_pages);
+      setTotalGenes(response.total);
+      setHasSearched(true);
+      setSelectedGene(null);
+    } catch (err) {
+      console.error("Failed to load genes:", err);
+      setError("Failed to load genes.");
+      setGenes([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function searchGenes(keyword: string) {
+    const trimmedKeyword = keyword.trim();
+
+    if (!trimmedKeyword) {
+      await loadGenes(1);
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
       setHasSearched(true);
+      setSelectedGene(null);
 
-      if (!keyword.trim()) {
-        setGenes([]);
-        setSelectedGene(null);
-        return;
-      }
-
-      const data = await GeneService.search(keyword);
+      const data = await GeneService.search(trimmedKeyword);
 
       setGenes(data);
-      setSelectedGene(null);
+      setPage(1);
+      setTotalPages(1);
+      setTotalGenes(data.length);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to search genes:", err);
       setError("Failed to search genes.");
       setGenes([]);
+      setTotalGenes(0);
     } finally {
       setLoading(false);
     }
@@ -40,13 +75,11 @@ export default function useGenes() {
     try {
       setLoading(true);
       setError("");
-      setHasSearched(true);
 
       const data = await GeneService.getDetails(symbol);
-
       setSelectedGene(data);
     } catch (err) {
-      console.error(err);
+      console.error("Unable to load gene details:", err);
       setError("Unable to load gene details.");
     } finally {
       setLoading(false);
@@ -58,14 +91,9 @@ export default function useGenes() {
   }
 
   function clearSearch() {
-    setGenes([]);
     setSelectedGene(null);
-    setHasSearched(false);
-    setError("");
+    void loadGenes(1);
   }
-//   function clearSelection() {
-//   setSelectedGene(null);
-// }
 
   return {
     genes,
@@ -73,7 +101,10 @@ export default function useGenes() {
     loading,
     error,
     hasSearched,
-
+    page,
+    totalPages,
+    totalGenes,
+    loadGenes,
     searchGenes,
     selectGene,
     clearSelection,

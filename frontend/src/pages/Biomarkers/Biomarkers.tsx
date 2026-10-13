@@ -155,7 +155,7 @@ export default function Biomarkers() {
         className="max-w-7xl mx-auto px-4 py-8"
       >
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6" style={{ fontFamily: "'Roboto Slab', serif" }}>
           <h1
             className="text-3xl font-light text-slate-900 relative inline-block"
             style={{ fontFamily: "Roboto Slab" }}
@@ -166,7 +166,7 @@ export default function Biomarkers() {
           </h1>
         </div>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 space-y-4" style={{ fontFamily: "'Roboto Slab', serif" }}>
           {/* Back button */}
           <button
             type="button"
@@ -221,7 +221,7 @@ export default function Biomarkers() {
           HEADER
       ====================================================== */}
 
-      <div className="mb-6">
+      <div className="mb-6" style={{ fontFamily: "'Roboto Slab', serif" }}>
         <div className="flex items-start justify-between gap-6">
           <div>
             <h1
@@ -278,7 +278,7 @@ export default function Biomarkers() {
             SEARCH
         ================================================== */}
 
-        <div className="mb-7">
+        <div className="mb-7" style={{ fontFamily: "'Roboto Slab', serif" }}>
 
           <div className="mb-2 flex items-center gap-2">
 
@@ -287,9 +287,9 @@ export default function Biomarkers() {
               className="text-teal-600"
             />
 
-            <h2 className="text-sm font-semibold text-slate-800">
+            {/* <h2 className="text-sm font-semibold text-slate-800">
               Search Biomarkers
-            </h2>
+            </h2> */}
 
           </div>
 
@@ -315,7 +315,7 @@ export default function Biomarkers() {
         ================================================== */}
 
         {loading && (
-          <div className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-20 shadow-sm">
+          <div className="flex items-center justify-center rounded-2xl border border-slate-200 bg-white py-20 shadow-sm" style={{ fontFamily: "'Roboto Slab', serif" }}>
 
             <div className="flex flex-col items-center gap-4">
 
@@ -394,7 +394,7 @@ export default function Biomarkers() {
 
               {/* RESULTS HEADER */}
 
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3" style={{ fontFamily: "'Roboto Slab', serif" }}>
 
                 <div>
 
@@ -440,7 +440,7 @@ export default function Biomarkers() {
                   SIDEBAR + TABLE
               ================================================== */}
 
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm" style={{ fontFamily: "'Roboto Slab', serif" }}>
 
                 <div className="grid min-h-[620px] md:grid-cols-[230px_1fr]">
 
@@ -560,7 +560,7 @@ export default function Biomarkers() {
 
                   {/* TABLE */}
 
-                  <section className="min-w-0 bg-white">
+                  <section className="min-w-0 bg-white" style={{ fontFamily: "'Roboto Slab', serif" }}>
 
                     <div className="border-b border-slate-100 px-5 py-4 md:px-6">
 

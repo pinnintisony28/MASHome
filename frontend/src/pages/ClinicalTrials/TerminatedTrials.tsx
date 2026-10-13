@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { ExternalLink, FlaskConical, Search } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 import ClinicalTrialService from "../../services/clinicalTrialService";
 import type { TerminatedTrial } from "../../types/terminatedTrial";
 
 export default function TerminatedTrials() {
+  const navigate = useNavigate();
   const [trials, setTrials] = useState<TerminatedTrial[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -77,6 +79,7 @@ const terminatedTrials = filteredTrials.slice(
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="mx-auto max-w-7xl px-4 py-8"
+      style={{ fontFamily: "'Roboto Slab', serif" }}
     >
       {/* Header */}
       <div className="mb-8">
@@ -226,10 +229,18 @@ of {filteredTrials.length} studies
                     </tr>
                   ) : (
                     terminatedTrials.map((trial) => (
-                      <tr
-                        key={trial.id}
-                        className="transition-colors hover:bg-slate-50"
-                      >
+                     <tr
+  key={trial.id}
+  onClick={() =>
+    navigate(
+      `/clinical-trials/terminated/${encodeURIComponent(
+        trial.nct_number || String(trial.id)
+      )}`
+    )
+  }
+  className="cursor-pointer transition-colors hover:bg-emerald-50"
+  style={{ fontFamily: "'Roboto Slab', serif" }}
+>
                         {/* NCT */}
                         <td className="whitespace-nowrap px-5 py-4">
                           <span className="font-medium text-emerald-700">

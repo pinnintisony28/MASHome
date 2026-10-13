@@ -47,7 +47,7 @@ export default function BiomarkerTable({
 
       <div className="overflow-x-auto">
 
-        <table className="w-full min-w-[650px]">
+        <table className="w-full min-w-[500px]">
 
           <thead>
 
@@ -65,9 +65,7 @@ export default function BiomarkerTable({
                 Category
               </th>
 
-              <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-                Subgroup
-              </th>
+              
 
             </tr>
 

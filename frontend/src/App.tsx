@@ -23,7 +23,9 @@ import OtherTherapies from "./pages/OtherTherapies";
 import OtherTherapyDetailsPage from "./pages/OtherTherapyDetails";
 import Pathways from "./pages/Pathways/Pathways";
 import Publications from "./pages/Publications";
-
+import ClinicalTrialDetailsPage from "./pages/ClinicalTrials/ClinicalTrialDetailsPage";
+import TerminatedTrialDetailsPage from "./pages/ClinicalTrials/TerminatedTrialDetailsPage";
+import WithdrawnTrialDetailsPage from "./pages/ClinicalTrials/WithdrawnTrialDetailsPage";
 function App() {
    const [appReady, setAppReady] = useState(false);
 
@@ -108,6 +110,18 @@ function App() {
 
           <Route path="/" element={<Home />} />
           <Route path="/publications" element={<Publications />} />
+          <Route
+  path="/clinical-trials/:trialId"
+  element={<ClinicalTrialDetailsPage />}
+/>
+<Route
+  path="/clinical-trials/terminated/:trialId"
+  element={<TerminatedTrialDetailsPage />}
+/>
+<Route
+  path="/clinical-trials/withdrawn/:trialId"
+  element={<WithdrawnTrialDetailsPage />}
+/>
         </Route>
       </Routes>
     

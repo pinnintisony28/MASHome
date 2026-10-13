@@ -25,29 +25,36 @@ export default function BioactiveContent({
   profile,
 }: Props) {
     
-  switch (activeTab) {
-   
-  case "overview":
-    return <OverviewTab profile={profile} />;
 
-  case "plants":
-    return <PlantsTab profile={profile} />;
+  return (
+    <div className="text-sm">
+      {(() => {
+        switch (activeTab) {
+          case "overview":
+            return <OverviewTab profile={profile} />;
 
-  case "adme":
-    return <ADMETab profile={profile} />;
+          case "plants":
+            return <PlantsTab profile={profile} />;
 
-  case "toxicity":
-    return <ToxicityTab profile={profile} />;
+          case "adme":
+            return <ADMETab profile={profile} />;
 
-  case "2d":
-    return <Molecule2DTab profile={profile} />;
+          case "toxicity":
+            return <ToxicityTab profile={profile} />;
 
-  case "3d":
-    return <Molecule3DTab profile={profile} />;
+          case "2d":
+            return <Molecule2DTab profile={profile} />;
 
-  default:
-    return null;
-}
+          case "3d":
+            return <Molecule3DTab profile={profile} />;
+
+          default:
+            return null;
+        }
+      })()}
+    </div>
+  );
+
 
     
 }

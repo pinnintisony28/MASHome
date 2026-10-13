@@ -97,7 +97,10 @@ export default function BiomarkerDetails({
   };
 
   return (
-    <div className="space-y-6">
+    <div
+  className="space-y-6"
+  style={{ fontFamily: "'Roboto Slab', serif" }}
+>
 
       {/* =================================================
           HEADER
@@ -261,7 +264,7 @@ export default function BiomarkerDetails({
 
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3">
 
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
 
@@ -279,21 +282,7 @@ export default function BiomarkerDetails({
 
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-slate-400">
-
-              <MapPin size={13} />
-
-              Source
-
-            </div>
-
-            <p className="mt-2 break-words text-sm font-medium text-slate-700">
-              {biomarker.source_sheet.trim()}
-            </p>
-
-          </div>
+         
 
         </div>
 

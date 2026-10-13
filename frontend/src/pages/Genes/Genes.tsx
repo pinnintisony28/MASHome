@@ -3,7 +3,7 @@ import useGenes from "../../hooks/useGenes";
 import GeneSearch from "../../components/gene/GeneSearch";
 import GeneTable from "../../components/gene/GeneTable";
 import GeneDetails from "../../components/gene/GeneDetails";
-import GeneWelcome from "../../components/gene/GeneWelcome";
+
 import { motion } from "framer-motion";
 import { ArrowLeft, Dna, Sparkles } from "lucide-react";
 
@@ -18,6 +18,10 @@ export default function Genes() {
   selectGene,
   clearSelection,
   clearSearch,
+  page,
+totalPages,
+totalGenes,
+loadGenes,
 } = useGenes();
 
   const showDetails = !!selectedGene;
@@ -105,19 +109,10 @@ export default function Genes() {
         </motion.div>
       )}
 
-      {/* Welcome State */}
-      {!loading && !error && !hasSearched && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <GeneWelcome onQuickSearch={searchGenes} />
-        </motion.div>
-      )}
+      
 
       {/* Results / Details: one view at a time */}
-      {!loading && !error && hasSearched && (
+      {!loading && !error && (
         <>
           {showDetails ? (
             /* ---------- Details "page" ---------- */
@@ -156,7 +151,7 @@ export default function Genes() {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-slate-700" style={{ fontFamily: "Roboto Slab" }}>
-                      {genes.length} gene{genes.length !== 1 ? "s" : ""} found
+                      {totalGenes} genes found
                     </span>
                     <span className="text-xs text-slate-400">•</span>
                     <span className="text-xs text-slate-400 flex items-center gap-1">
@@ -169,6 +164,31 @@ export default function Genes() {
 
               <div className="h-[calc(100vh-400px)] min-h-[400px]">
                 <GeneTable genes={genes} onSelect={selectGene} />
+                
+{!selectedGene && totalPages > 1 && (
+  <div className="mt-6 flex items-center justify-center gap-4">
+    <button
+      disabled={page <= 1 || loading}
+      onClick={() => void loadGenes(page - 1)}
+      className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40"
+    >
+      Previous
+    </button>
+
+    <span className="text-sm text-slate-600">
+      Page {page} of {totalPages}
+    </span>
+
+    <button
+      disabled={page >= totalPages || loading}
+      onClick={() => void loadGenes(page + 1)}
+      className="rounded-lg border px-4 py-2 text-sm disabled:opacity-40"
+    >
+      Next
+    </button>
+  </div>
+)}
+
               </div>
             </motion.div>
           )}

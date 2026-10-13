@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 
 import ClinicalTrialService from "../../services/clinicalTrialService";
 import type { TerminatedTrial } from "../../types/terminatedTrial";
+import { useNavigate } from "react-router-dom";
 
 export default function WithdrawnTrials() {
+  const navigate = useNavigate();
   const [trials, setTrials] = useState<TerminatedTrial[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -69,6 +71,7 @@ const withdrawnTrials = filteredTrials.slice(
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
       className="mx-auto max-w-7xl px-4 py-8"
+      style={{ fontFamily: "'Roboto Slab', serif" }}
     >
       {/* Header */}
       <div className="mb-8">
@@ -219,9 +222,17 @@ of {filteredTrials.length} studies
                   ) : (
                     withdrawnTrials.map((trial) => (
                       <tr
-                        key={trial.id}
-                        className="transition-colors hover:bg-slate-50"
-                      >
+  key={trial.id}
+  onClick={() =>
+    navigate(
+      `/clinical-trials/withdrawn/${encodeURIComponent(
+        trial.nct_number || String(trial.id)
+      )}`
+    )
+  }
+  className="cursor-pointer transition-colors hover:bg-amber-50"
+  title="View withdrawn trial details"
+>
                         {/* NCT Number */}
                         <td className="whitespace-nowrap px-5 py-4">
                           <span className="font-medium text-amber-700">

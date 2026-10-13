@@ -1,14 +1,6 @@
+
 import { ShieldAlert } from "lucide-react";
 import type { BioactiveToxicity } from "../../../types/bioactive";
-
-// type Toxicity = {
-//   category?: string;
-//   endpoint?: string;
-//   prediction?: string;
-//   probability?: number;
-//   predicted_ld50?: string;
-//   predicted_toxicity_class?: string;
-// };
 
 type Props = {
   toxicity: BioactiveToxicity[];
@@ -16,44 +8,54 @@ type Props = {
 
 export default function ToxicitySection({ toxicity }: Props) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-center gap-2 mb-4">
-        <ShieldAlert className="text-red-500" size={18} />
-        <h3
-          className="text-sm font-semibold text-slate-700"
-          style={{ fontFamily: "Roboto Slab" }}
-        >
+    <section
+      className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm"
+      style={{ fontFamily: "'Roboto Slab', serif" }}
+    >
+      <div className="mb-3 flex items-center gap-2">
+        <ShieldAlert className="text-red-500" size={16} />
+
+        <h3 className="text-sm font-semibold text-slate-700">
           Toxicity Profile
         </h3>
       </div>
 
-      <div className="space-y-3">
-        {toxicity.map((item, index) => (
-          <div
-            key={index}
-            className="rounded-lg border border-slate-200 p-3 bg-slate-50"
-          >
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <Info label="Category" value={item.category} />
-              <Info label="Endpoint" value={item.endpoint} />
-              <Info label="Prediction" value={item.prediction} />
-              <Info
-  label="Probability"
-  value={
-    item.probability !== undefined
-      ? `${(item.probability * 100).toFixed(0)}%`
-      : "—"
-  }
-/>
-              <Info label="LD50" value={item.predicted_ld50} />
-              <Info
-                label="Toxicity Class"
-                value={item.predicted_toxicity_class}
-              />
+      {toxicity.length === 0 ? (
+        <p className="py-4 text-center text-xs text-slate-500">
+          No toxicity information available.
+        </p>
+      ) : (
+        <div className="space-y-2">
+          {toxicity.map((item, index) => (
+            <div
+              key={index}
+              className="rounded-lg border border-slate-200 bg-slate-50 p-3"
+            >
+              <div className="grid grid-cols-2 gap-x-3 gap-y-3">
+                <Info label="Category" value={item.category} />
+                <Info label="Endpoint" value={item.endpoint} />
+                <Info label="Prediction" value={item.prediction} />
+
+                <Info
+                  label="Probability"
+                  value={
+                    item.probability !== undefined &&
+                    item.probability !== null
+                      ? `${(item.probability * 100).toFixed(0)}%`
+                      : "—"
+                  }
+                />
+
+                <Info label="LD50" value={item.predicted_ld50} />
+                <Info
+                  label="Toxicity Class"
+                  value={item.predicted_toxicity_class}
+                />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
@@ -63,12 +65,15 @@ function Info({
   value,
 }: {
   label: string;
-  value?: string | number;
+  value?: string | number | null;
 }) {
   return (
-    <div>
-      <p className="text-[10px] uppercase text-slate-400">{label}</p>
-      <p className="text-sm font-medium text-slate-700">
+    <div className="min-w-0">
+      <p className="text-[10px] font-medium uppercase text-slate-400">
+        {label}
+      </p>
+
+      <p className="mt-0.5 break-words text-xs font-medium text-slate-700">
         {value ?? "—"}
       </p>
     </div>

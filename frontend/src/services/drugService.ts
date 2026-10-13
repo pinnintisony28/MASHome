@@ -1,3 +1,4 @@
+
 import api from "./api";
 import type { Drug } from "../types/drug";
 
@@ -13,7 +14,9 @@ class DrugService {
   }
 
   async search(keyword: string): Promise<Drug[]> {
-    const response = await api.get(`/drugs/search/${keyword}`);
+    const response = await api.get(
+      `/drugs/search/${encodeURIComponent(keyword)}`
+    );
     return response.data;
   }
 }

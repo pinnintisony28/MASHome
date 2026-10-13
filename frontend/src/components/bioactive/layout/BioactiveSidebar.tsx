@@ -1,3 +1,4 @@
+
 import {
   BookOpen,
   Leaf,
@@ -34,12 +35,12 @@ export default function BioactiveSidebar({
   onTabChange,
 }: Props) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h2 className="mb-4 text-lg font-bold">
+    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+      <h2 className="mb-3 text-sm font-bold">
         Navigation
       </h2>
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {items.map((item) => {
           const Icon = item.icon;
 
@@ -47,13 +48,13 @@ export default function BioactiveSidebar({
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
-              className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition ${
+              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition ${
                 activeTab === item.id
                   ? "bg-emerald-600 text-white"
                   : "hover:bg-slate-100"
               }`}
             >
-              <Icon size={18} />
+              <Icon size={15} />
 
               <span>{item.label}</span>
             </button>
