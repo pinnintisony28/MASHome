@@ -39,13 +39,15 @@ async getById(targetId: string): Promise<Target> {
 
 
   // Get drugs for a target
- async getDrugs(targetId: string): Promise<TargetDrug[]> {
+ 
+async getDrugs(targetId: string): Promise<TargetDrug[]> {
   const response = await api.get<TargetDrug[]>(
-    `${API_ENDPOINTS.TARGETS}/${targetId}/drugs`
+    `${API_ENDPOINTS.TARGETS.replace(/\/+$/, "")}/${targetId}/drugs`
   );
 
   return response.data;
 }
+
 
   // Filter targets by type
   async getByType(targetType: string): Promise<Target[]> {
