@@ -28,13 +28,15 @@ class TargetService {
   }
 
   // Get target by ID
-  async getById(targetId: string): Promise<Target> {
-    const response = await api.get<Target>(
-      `${API_ENDPOINTS.TARGETS}/${targetId}`
-    );
+ 
+async getById(targetId: string): Promise<Target> {
+  const response = await api.get<Target>(
+    `${API_ENDPOINTS.TARGETS.replace(/\/+$/, "")}/${targetId}`
+  );
 
-    return response.data;
-  }
+  return response.data;
+}
+
 
   // Get drugs for a target
  async getDrugs(targetId: string): Promise<TargetDrug[]> {
