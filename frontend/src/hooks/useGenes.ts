@@ -2,7 +2,13 @@
 import { useEffect, useState } from "react";
 import GeneService from "../services/geneService";
 import type { Gene, GeneDetails } from "../types/gene";
-
+function getGeneCompleteness(gene: Gene): number {
+  return Object.values(gene).filter((value) => {
+    if (value === null || value === undefined) return false;
+    if (typeof value === "string" && value.trim() === "") return false;
+    return true;
+  }).length;
+}
 export default function useGenes() {
   const [genes, setGenes] = useState<Gene[]>([]);
   const [selectedGene, setSelectedGene] = useState<GeneDetails | null>(null);
@@ -26,7 +32,11 @@ export default function useGenes() {
 
       const response = await GeneService.getAll(pageNumber, 25);
 
-      setGenes(response.items);
+     setGenes(
+  [...response.items].sort(
+    (a, b) => getGeneCompleteness(b) - getGeneCompleteness(a)
+  )
+);
       setPage(response.page);
       setTotalPages(response.total_pages);
       setTotalGenes(response.total);
@@ -57,7 +67,11 @@ export default function useGenes() {
 
       const data = await GeneService.search(trimmedKeyword);
 
-      setGenes(data);
+      setGenes(
+  [...data].sort(
+    (a, b) => getGeneCompleteness(b) - getGeneCompleteness(a)
+  )
+);
       setPage(1);
       setTotalPages(1);
       setTotalGenes(data.length);

@@ -27,7 +27,7 @@ export default function ClinicalTrials() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="mx-auto w-full max-w-[1600px] px-4 py-8"
+      className="max-w-7xl mx-auto px-4 py-8"
       style={{ fontFamily: "Roboto Slab, serif" }}
     >
       <div className="mb-6">
@@ -35,7 +35,7 @@ export default function ClinicalTrials() {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <h1 className="relative inline-block text-3xl font-light text-slate-900">
-                Clinical Trials
+                Clinical Trials 
                 <span className="absolute -bottom-2 left-0 h-0.5 w-12 rounded-full bg-emerald-500" />
                 <span className="absolute -bottom-2 left-14 h-0.5 w-2 rounded-full bg-emerald-300" />
               </h1>

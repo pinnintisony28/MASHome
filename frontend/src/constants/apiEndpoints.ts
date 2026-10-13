@@ -1,7 +1,7 @@
 const API_ENDPOINTS = {
   DASHBOARD: "/dashboard/stats",
 
-  TARGETS: "/targets",
+  TARGETS: "/targets/",
   TARGET_SEARCH: "/targets/search",
   TARGET_TYPE: "/targets/type",
 

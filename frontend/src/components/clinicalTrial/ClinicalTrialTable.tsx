@@ -20,7 +20,7 @@ export default function ClinicalTrialTable({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="h-full overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-sm flex flex-col"
+      className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-sm"
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-200/60 px-5 py-3.5 bg-gradient-to-r from-slate-50/50 to-white flex-shrink-0">
@@ -45,8 +45,8 @@ export default function ClinicalTrialTable({
       </div>
 
       {/* Table - Takes all remaining space */}
-      <div className="flex-1 overflow-auto scrollbar-hide min-h-[200px]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        <table className="min-w-full">
+      <div className="min-h-[200px] min-w-0 w-full flex-1 overflow-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <table className="w-full min-w-[900px]">
           <thead className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm">
   <tr>
     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500">

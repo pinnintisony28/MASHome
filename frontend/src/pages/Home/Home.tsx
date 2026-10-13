@@ -20,12 +20,12 @@ export default function Home() {
         <ResearchWorkflow />
 
         <MentorSection
-          mentorName="M.SatyaVani"
-          designation="Professor"
-          department="Department of Pharmacy"
-          institution="Sri Sivani College of Pharmacy"
-          photo="/mentor.jpg"
-        />
+  mentorName="Meesala Satyavani"
+  designation="Research Scholar"
+  department="Department of Pharmacy"
+  institution="Anurag School of Pharmacy, Anurag University, Hyderabad"
+  photo="/assets/mam.jpeg"
+/>
 
         <AboutSection />
 
