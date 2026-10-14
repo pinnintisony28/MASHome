@@ -1088,22 +1088,17 @@ export default function Pathways() {
 
   <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
 
-    <img
-
+    
+<img
   src={
-
     selectedPathway.image_url.startsWith("http")
-
       ? selectedPathway.image_url
-
-      : `${api.defaults.baseURL}${selectedPathway.image_url.startsWith("/") ? "" : "/"}${selectedPathway.image_url}`
-
+      : selectedPathway.image_url.startsWith("/pathway-images/")
+        ? selectedPathway.image_url
+        : `/pathway-images/${selectedPathway.image_url.replace(/^\/+/, "")}`
   }
-
   alt={`${selectedPathway.pathway_name} pathway`}
-
   className="mx-auto max-h-[700px] w-full object-contain"
-
 />
 
   </div>
