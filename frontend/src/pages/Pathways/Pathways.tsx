@@ -32,7 +32,45 @@ import PathwayTableView from "../../components/pathway/PathwayTableView";
 
 
 
+const PATHWAY_IMAGES: Record<string, string> = {
+  "Insulin Resistance": "Insulin_Resistance.png",
+  "AMPK": "AMPK.png",
+  "Apoptosis": "Apoptosis.png",
+  "Autophagy": "Autophagy.png",
+  "Bile Acid FXR": "Bile_Acid_FXR.png",
+  "Carcinogenesis": "Carcinogenesis.png",
+  "Cell Cycle Regulation": "Cell_Cycle_Regulation.png",
+  "Cholesterol Metabolism": "Cholesterol_Metabolism.png",
+  "ChREBP": "ChREBP.png",
+  "DNA Damage Response": "DNA_Damage_Response.png",
+  "ECM Remodeling": "ECM_Remodeling.png",
+  "ER Stress UPR": "ER_Stress_UPR.png",
+  "Fatty Acid Oxidation": "Fatty_Acid_Oxidation.png",
+  "Ferroptosis": "Ferroptosis.png",
+  "Gut Liver Axis": "Gut_Liver_Axis.png",
+  "Hippo YAP": "Hippo_YAP.png",
+  "Immune Cell Signaling": "Immune_Cell_Signaling.png",
+  "JAK STAT": "JAK_STAT.png",
+  "KEAP1 NRF2": "KEAP1_NRF2.png",
+  "Lipogenesis": "Lipogenesis.png",
+  "MAPK JNK": "MAPK_JNK.png",
+  "Mitophagy": "Mitophagy.png",
+  "Necroptosis": "Necroptosis.png",
+  "NF-κB Inflammatory Signaling Pathway": "NF_B.png",
+  "NLRP3 Inflammasome": "NLRP3_Inflammasome.png",
+  "Notch": "Notch.png",
+  "PDGF": "PDGF.png",
+  "PI3K–AKT–mTOR Signaling Pathway": "PI3K_AKT_mTOR.png",
+  "PPAR": "PPAR.png",
+  "Pyroptosis": "Pyroptosis.png",
+  "SREBP": "SREBP.png",
+  "TGF-β–SMAD Signaling Pathway": "TGF_SMAD.png",
+  "TLR4": "TLR4.png",
+  "VEGF": "VEGF.png",
+  "Wnt Catenin": "Wnt_Catenin.png",
+};
 export default function Pathways() {
+
 
   const {
 
@@ -1086,26 +1124,36 @@ export default function Pathways() {
 
                     </h2>
 
-                    {selectedPathway.image_url && (
+                    
+{(() => {
+  const imageFile =
+    PATHWAY_IMAGES[selectedPathway.source_sheet] ||
+    PATHWAY_IMAGES[selectedPathway.pathway_name];
 
-  <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-
-    
-<img
-  src={
-    selectedPathway.image_url.startsWith("http")
+  const imageUrl = selectedPathway.image_url
+    ? selectedPathway.image_url.startsWith("http")
       ? selectedPathway.image_url
       : selectedPathway.image_url.startsWith("/pathway-images/")
         ? selectedPathway.image_url
         : `/pathway-images/${selectedPathway.image_url.replace(/^\/+/, "")}`
-  }
-  alt={`${selectedPathway.pathway_name} pathway`}
-  className="mx-auto max-h-[700px] w-full object-contain"
-/>
+    : imageFile
+      ? `/pathway-images/${imageFile}`
+      : null;
 
-  </div>
-
-)}
+  return imageUrl ? (
+    <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-3">
+      <img
+        src={imageUrl}
+        alt={`${selectedPathway.pathway_name} pathway`}
+        className="mx-auto block max-h-[700px] w-full object-contain"
+        onError={(e) => {
+          console.error("Failed to load pathway image:", imageUrl);
+          e.currentTarget.style.display = "none";
+        }}
+      />
+    </div>
+  ) : null;
+})()}
 
 
 
