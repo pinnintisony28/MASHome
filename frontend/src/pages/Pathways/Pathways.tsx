@@ -59,8 +59,9 @@ export default function Pathways() {
   const [showPathwayMenu, setShowPathwayMenu] =
 
     useState(false);
+  console.log("Selected pathway image URL:", selectedPathway?.image_url);
 
-  /*
+  /*console.log("Selected pathway image URL:", selectedPathway?.image_url);
 
    * Get all individual tables from pathway_data.
 
@@ -141,6 +142,7 @@ export default function Pathways() {
 
 
     return (
+    
 
       <div className="space-y-6">
 
